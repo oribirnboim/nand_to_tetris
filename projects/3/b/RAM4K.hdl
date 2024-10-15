@@ -13,5 +13,37 @@ CHIP RAM4K {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    DMux16(in=in, sel=address[2], a=h1, b=h2);
+        DMux16(in=h1, sel=address[1], a=q1, b=q2);
+            DMux16(in=q1, sel=address[0], a=in1, b=in2);
+            DMux16(in=q2, sel=address[0], a=in3, b=in4);
+        DMux16(in=h2, sel=address[1], a=q3, b=q4);
+            DMux16(in=q3, sel=address[0], a=in5, b=in6);
+            DMux16(in=q4, sel=address[0], a=in7, b=in8);
+    
+    DMux(in=load, sel=address[2], a=h1load, b=h2load);
+        DMux(in=h1load, sel=address[1], a=q1load, b=q2load);
+            DMux(in=q1load, sel=address[0], a=load1, b=load2);
+            DMux(in=q2load, sel=address[0], a=load3, b=load4);
+        DMux(in=h2load, sel=address[1], a=q3load, b=q4load);
+            DMux(in=q3load, sel=address[0], a=load5, b=load6);
+            DMux(in=q4load, sel=address[0], a=load7, b=load8);
+
+    RAM512(in=in1, load=load1, address=address[3..11], out=out1);
+    RAM512(in=in2, load=load2, address=address[3..11], out=out2);
+    RAM512(in=in3, load=load3, address=address[3..11], out=out3);
+    RAM512(in=in4, load=load4, address=address[3..11], out=out4);
+    RAM512(in=in5, load=load5, address=address[3..11], out=out5);
+    RAM512(in=in6, load=load6, address=address[3..11], out=out6);
+    RAM512(in=in7, load=load7, address=address[3..11], out=out7);
+    RAM512(in=in8, load=load8, address=address[3..11], out=out8);
+    
+    
+    Mux16(a=hh1, b=hh2, sel=address[2], out=out);
+        Mux16(a=qq1, b=qq2, sel=address[1], out=hh1);
+            Mux16(a=out1, b=out2, sel=address[0], out=qq1);
+            Mux16(a=out3, b=out4, sel=address[0], out=qq2);
+        Mux16(a=qq3, b=qq4, sel=address[1], out=hh2);
+            Mux16(a=out5, b=out6, sel=address[0], out=qq3);
+            Mux16(a=out7, b=out8, sel=address[0], out=qq4);
 }

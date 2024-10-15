@@ -6,12 +6,13 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 import typing
+import os
 
 
 class CodeWriter:
     """Translates VM commands into Hack assembly code."""
 
-    def __init__(self, output_stream: typing.TextIO) -> None:
+    def __init__(self, output_stream: typing.TextIO, input_filename: str) -> None:
         """Initializes the CodeWriter.
 
         Args:
@@ -20,7 +21,10 @@ class CodeWriter:
         # Your code goes here!
         # Note that you can write to output_stream like so:
         # output_stream.write("Hello world! \n")
-        pass
+        self.filename = os.path.basename(input_filename)
+        self.stream = output_stream
+        self.label_counter = 0
+
 
     def set_file_name(self, filename: str) -> None:
         """Informs the code writer that the translation of a new VM file is 
@@ -42,6 +46,17 @@ class CodeWriter:
         # input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
         pass
 
+
+    def generate_helper_label(self) -> str:
+        res = self.filename + '_helper' + str(self.label_counter)
+        self.label_counter += 1
+        return res
+    
+
+    def write(self, line: str) -> None:
+        self.stream.write(line + '\n')
+
+
     def write_arithmetic(self, command: str) -> None:
         """Writes assembly code that is the translation of the given 
         arithmetic command. For the commands eq, lt, gt, you should correctly
@@ -52,7 +67,41 @@ class CodeWriter:
             command (str): an arithmetic command.
         """
         # Your code goes here!
-        pass
+        if command in {'add', 'sub', 'and', 'or'}:
+            self.write('@SP //add group')
+            self.write('M=M-1')
+            self.write('A=M')
+            self.write('D=M')
+            self.write('@SP')
+            self.write('A=M-1')
+            if command == 'add': self.write('M=D+M //add')
+            if command == 'sub': self.write('M=M-D //sub')
+            if command == 'and': self.write('M=D&M //and')
+            if command == 'or': self.write('M=D|M //or')
+        if command in {'neg', 'not'}:
+            self.write('@SP //neg group')
+            self.write('A=M-1')
+            if command == 'neg': self.write('M=-M')
+            else: self.write('M=!M')
+        if command in {'eq', 'gt', 'lt'}:
+            self.write('@SP //eq group')
+            self.write('M=M-1')
+            self.write('A=M')
+            self.write('D=M')
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('D=M-D')
+            lbl = self.generate_helper_label()
+            self.write('M=-1')
+            self.write('@' + lbl)
+            if command == 'eq': self.write('D;JEQ')
+            if command == 'gt': self.write('D;JGT')
+            if command == 'lt': self.write('D;JLT')
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('M=!M')
+            self.write('(' + lbl + ')')
+
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given 
@@ -68,7 +117,98 @@ class CodeWriter:
         # be translated to the assembly symbol "Xxx.i". In the subsequent
         # assembly process, the Hack assembler will allocate these symbolic
         # variables to the RAM, starting at address 16.
-        pass
+        seg = {'local': 'LCL',
+               'argument': 'ARG',
+               'this': 'THIS',
+               'that': 'THAT'}
+        if command == 'C_POP':
+            self.write('//pop')
+            if segment in seg.keys():
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('M=D+M')
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + seg[segment])
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('M=M-D')
+            if segment == 'temp':
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + str(5 + index))
+                self.write('M=D')
+            if segment == 'static':
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + self.filename + '.' + str(index))
+                self.write('M=D')
+            if segment == 'pointer':
+                if index == 0: th = 'THIS'
+                else: th = 'THAT'
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + th)
+                self.write('M=D')
+        else:
+            self.write('//push')
+            if segment in seg.keys():
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('A=D+M')
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'temp':
+                self.write('@' + str(5 + index))
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'static':
+                self.write('@' + self.filename + '.' + str(index))
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'pointer':
+                if index == 0: th = 'THIS'
+                else: th = 'THAT'
+                self.write('@' + th)
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'constant':
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
 
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command. 
@@ -84,7 +224,8 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
+
     def write_goto(self, label: str) -> None:
         """Writes assembly code that affects the goto command.
 
@@ -94,7 +235,8 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
+
     def write_if(self, label: str) -> None:
         """Writes assembly code that affects the if-goto command. 
 
@@ -104,7 +246,8 @@ class CodeWriter:
         # This is irrelevant for project 7,
         # you will implement this in project 8!
         pass
-    
+
+
     def write_function(self, function_name: str, n_vars: int) -> None:
         """Writes assembly code that affects the function command. 
         The handling of each "function Xxx.foo" command within the file Xxx.vm
@@ -124,7 +267,8 @@ class CodeWriter:
         # repeat n_vars times:  // n_vars = number of local variables
         #   push constant 0     // initializes the local variables to 0
         pass
-    
+
+
     def write_call(self, function_name: str, n_args: int) -> None:
         """Writes assembly code that affects the call command. 
         Let "Xxx.foo" be a function within the file Xxx.vm.
@@ -154,7 +298,8 @@ class CodeWriter:
         # goto function_name    // transfers control to the callee
         # (return_address)      // injects the return address label into the code
         pass
-    
+
+
     def write_return(self) -> None:
         """Writes assembly code that affects the return command."""
         # This is irrelevant for project 7,

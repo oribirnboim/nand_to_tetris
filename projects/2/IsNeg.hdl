@@ -1,0 +1,8 @@
+CHIP IsNeg {
+    IN
+        x[16];
+    OUT
+        out;
+    PARTS:
+    And(a=x[15], b=x[15], out=out);
+}
