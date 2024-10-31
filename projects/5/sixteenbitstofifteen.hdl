@@ -1,0 +1,25 @@
+CHIP sixteenbitstofifteen {
+
+    IN in[16];
+    OUT out[15];
+
+    PARTS:
+    Nand(a=in[0], b=in[0], out=notin0);
+    Xor(a=in[0], b=notin0, out=one);
+    
+    And(a=in[0], b=one, out=out[0]);
+    And(a=in[1], b=one, out=out[1]);
+    And(a=in[2], b=one, out=out[2]);
+    And(a=in[3], b=one, out=out[3]);
+    And(a=in[4], b=one, out=out[4]);
+    And(a=in[5], b=one, out=out[5]);
+    And(a=in[6], b=one, out=out[6]);
+    And(a=in[7], b=one, out=out[7]);
+    And(a=in[8], b=one, out=out[8]);
+    And(a=in[9], b=one, out=out[9]);
+    And(a=in[10], b=one, out=out[10]);
+    And(a=in[11], b=one, out=out[11]);
+    And(a=in[12], b=one, out=out[12]);
+    And(a=in[13], b=one, out=out[13]);
+    And(a=in[14], b=one, out=out[14]);
+}
