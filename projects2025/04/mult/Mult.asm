@@ -17,3 +17,33 @@
 // - You can implement any multiplication algorithm you want.
 
 // Put your code here.
+
+(INIT) //init R2 to 0
+@0
+D=A;
+@R2
+M=D;
+
+@R1 //init counter to value in R1
+D=M
+@counter
+M=D
+
+(LOOP)
+@counter //check if counter is zero, go to end if done
+D=M;
+@END
+D;JEQ
+
+@R0 //add R0 to R2
+D=M;
+@R2
+M=D+M;
+@counter //decrement counter
+M=M-1;
+@LOOP //repeat loop
+0;JMP
+
+(END) //infinite loop to stop PC
+@END
+0;JMP

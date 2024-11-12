@@ -15,3 +15,92 @@
 // - Changing R14, R15 is not allowed.
 
 // Put your code here.
+
+
+(START)
+@R14 //copy addresses to other variables
+D=M
+@addr
+M=D
+@R15
+D=M
+@array_counter
+M=D
+
+@R14 // init min and max variables
+A=M
+D=M
+@min
+M=D
+@max
+M=D
+
+@R14 // init min and max addresses
+D=M
+@min_addr
+M=D
+@max_addr
+M=D
+
+(LOOP) //go over the array, find min, max, and their addresses
+@addr
+A=M
+D=M
+@min
+D=D-M
+@NOT_LESS
+D;JGE // if value is less than min:
+@addr
+D=M
+@min_addr // save address
+M=D
+@addr
+A=M
+D=M
+@min // save value
+M=D
+(NOT_LESS)
+
+@addr
+A=M
+D=M
+@max
+D=D-M
+@NOT_MORE
+D;JLT // if value is more than max:
+@addr
+D=M
+@max_addr // save address
+M=D
+@addr
+A=M
+D=M
+@max // save value
+M=D
+(NOT_MORE)
+
+@array_counter //loop utilities:
+M=M-1 //reduce counter
+@addr
+M=M+1 //increase address
+@array_counter
+D=M
+@LOOP
+D;JGT //repeat loop if needed
+
+
+@min //do the swap
+D=M
+@max_addr
+A=M
+M=D
+@max
+D=M
+@min_addr
+A=M
+M=D
+
+
+(END)
+@END
+0;JMP

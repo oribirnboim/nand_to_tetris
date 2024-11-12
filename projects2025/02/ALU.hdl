@@ -35,19 +35,30 @@ CHIP ALU {
         nx, // negate the x input?
         zy, // zero the y input?
         ny, // negate the y input?
-        f,  // compute out = x + y (if 1) or x & y (if 0)
+        f,  // compute (out = x + y) or (out = x & y)?
         no; // negate the out output?
-
     OUT 
         out[16], // 16-bit output
-        zr, // 1 if (out == 0), 0 otherwise
-        ng; // 1 if (out < 0),  0 otherwise
+        zr,      // if (out == 0) equals 1, else 0
+        ng;      // if (out < 0)  equals 1, else 0
 
     PARTS:
-    // You're advised to work on the ALU chip in two steps:
-    // - First, without handling status outputs (ALU-nostat)
-    // - Then, adding the missing functionality for the "full" chip (ALU). 
-    // You only need to submit the "full" ALU, no need to submit the partial
-    // implementation (ALU-nostat).
-    // Put your code here:
+    Mux16(a=x, b=false, sel=zx, out=afterzx);
+    Xor16(a=afterzx, b=true, out=xorx);    
+    Mux16(a=afterzx, b=xorx, sel=nx, out=xafter);
+
+    Mux16(a=y, b=false, sel=zy, out=afterzy);
+    Xor16(a=afterzy, b=true, out=xory);
+    Mux16(a=afterzy, b=xory, sel=ny, out=yafter);
+
+    Add16(a=xafter, b=yafter, out=sum);
+    And16(a=xafter, b=yafter, out=and);
+    Mux16(a=and, b=sum, sel=f, out=out1);
+    
+    Xor16(a=out1, b=true, out=flipout);
+    Mux16(a=out1, b=flipout, sel=no, out=t);
+    And16(a=t, b=t, out=out);
+    
+    IsZero(x=t, out=zr);
+    IsNeg(x=t, out=ng);
 }
