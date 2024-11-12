@@ -24,4 +24,18 @@ CHIP ExtendAlu {
      
      PARTS:
      // Put your code here:
+     ALU(x=x, y=y, zx=instruction[5], nx=instruction[4], zy=instruction[3], ny=instruction[2], f=instruction[1], no=instruction[0], out=regularAlu, zr=l, ng=m);
+     
+     Mux16(a=y, b=x, sel=instruction[4], out=toShift);
+
+     ShiftLeft(in=toShift, out=shiftedLeft);
+     ShiftRight(in=toShift, out=shiftedRight);
+     Mux16(a=shiftedRight, b=shiftedLeft, sel=instruction[5], out=shiftRes);
+
+     Mux16(a=shiftRes, b=regularAlu, sel=instruction[8], out=t);
+
+
+     And16(a=t, b=t, out=out);
+     IsZero(x=t, out=zr);
+     IsNeg(x=t, out=ng);
 }
