@@ -13,6 +13,49 @@ from Parser import Parser
 from Code import Code
 
 
+def first_pass(parser: Parser, symbol_table: SymbolTable) -> None:
+    parser.restart()
+    finished = False
+    command_counter = 0
+    while not finished:
+        if parser.command_type() == "L_COMMAND":
+            symbol_table.add_label(parser.symbol(), command_counter)
+        else:
+            command_counter += 1
+        if not parser.has_more_commands(): finished = True
+        else: parser.advance()
+
+
+def second_pass(parser: Parser, symbol_table: SymbolTable) -> list[str]:
+    # parser.restart()
+    # finished = False
+    # while not finished:
+    #     print(parser.commands[parser.current_line])
+    #     if not parser.has_more_commands(): finished = True
+    #     else: parser.advance()
+    parser.restart()
+    res = []
+    finished = False
+    while not finished:
+        # print(parser.commands[parser.current_line])
+        if parser.command_type() == "L_COMMAND":
+            if not parser.has_more_commands(): finished = True
+            else: parser.advance()
+            continue
+        if parser.command_type() == "A_COMMAND":
+            symbol = parser.symbol()
+            if symbol.isnumeric(): num = int(symbol)
+            else:
+                if not symbol_table.contains(symbol): symbol_table.add_variable(symbol)
+                num = symbol_table.get_address(symbol)
+            res.append('0' + Code.binary(num))
+        else:
+            res.append(Code.c_command(parser.dest(), parser.comp(), parser.jump()))
+        if not parser.has_more_commands(): finished = True
+        else: parser.advance()
+    return res
+
+
 def assemble_file(
         input_file: typing.TextIO, output_file: typing.TextIO) -> None:
     """Assembles a single file.
@@ -26,7 +69,12 @@ def assemble_file(
     # parser = Parser(input_file)
     # Note that you can write to output_file like so:
     # output_file.write("Hello world! \n")
-    pass
+    parser = Parser(input_file)
+    symbol_table = SymbolTable()
+    first_pass(parser, symbol_table)
+    code = second_pass(parser, symbol_table)
+    for line in code:
+        output_file.write(line + '\n')
 
 
 if "__main__" == __name__:
@@ -46,6 +94,7 @@ if "__main__" == __name__:
         files_to_assemble = [argument_path]
     for input_path in files_to_assemble:
         filename, extension = os.path.splitext(input_path)
+        print(filename)
         if extension.lower() != ".asm":
             continue
         output_path = filename + ".hack"

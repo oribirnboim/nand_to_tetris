@@ -96,3 +96,5 @@ class Code:
             'JLE': '110',
             'JMP': '111'}
         return jump_dict[mnemonic]
+
+
