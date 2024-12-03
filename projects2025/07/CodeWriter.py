@@ -6,12 +6,14 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 import typing
+import os
+"2025"
 
 
 class CodeWriter:
     """Translates VM commands into Hack assembly code."""
 
-    def __init__(self, output_stream: typing.TextIO) -> None:
+    def __init__(self, output_stream: typing.TextIO, input_filename: str) -> None:
         """Initializes the CodeWriter.
 
         Args:
@@ -20,7 +22,10 @@ class CodeWriter:
         # Your code goes here!
         # Note that you can write to output_stream like so:
         # output_stream.write("Hello world! \n")
-        pass
+        self.filename = os.path.basename(input_filename)
+        self.stream = output_stream
+        self.label_counter = 0
+
 
     def set_file_name(self, filename: str) -> None:
         """Informs the code writer that the translation of a new VM file is 
@@ -42,6 +47,17 @@ class CodeWriter:
         # input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
         pass
 
+
+    def generate_helper_label(self) -> str:
+        res = self.filename + '_helper' + str(self.label_counter)
+        self.label_counter += 1
+        return res
+    
+
+    def write(self, line: str) -> None:
+        self.stream.write(line + '\n')
+
+
     def write_arithmetic(self, command: str) -> None:
         """Writes assembly code that is the translation of the given 
         arithmetic command. For the commands eq, lt, gt, you should correctly
@@ -52,7 +68,106 @@ class CodeWriter:
             command (str): an arithmetic command.
         """
         # Your code goes here!
-        pass
+        if command in {'add', 'sub', 'and', 'or'}:
+            self.write('@SP //add group')
+            self.write('M=M-1')
+            self.write('A=M')
+            self.write('D=M')
+            self.write('@SP')
+            self.write('A=M-1')
+            if command == 'add': self.write('M=D+M //add')
+            if command == 'sub': self.write('M=M-D //sub')
+            if command == 'and': self.write('M=D&M //and')
+            if command == 'or': self.write('M=D|M //or')
+        if command in {'neg', 'not'}:
+            self.write('@SP //neg group')
+            self.write('A=M-1')
+            if command == 'neg': self.write('M=-M')
+            elif command == 'not': self.write('M=!M')
+            elif command == 'shiftleft': self.write('M=M<<')
+            elif command == 'shiftright': self.write('M=M>>')
+        if command == 'eq':
+            end_eq = self.generate_helper_label()
+            self.write('@SP')
+            self.write('M=M-1')
+            self.write('A=M-1')
+            self.write('D=M') #D=x
+            self.write('A=A+1')
+            self.write('D=D-M') #D=x-y
+            self.write('A=A-1')
+            self.write('M=-1')
+            self.write('@' + end_eq)
+            if command == 'eq': self.write('D;JEQ')
+            else: self.write('D;JLT')
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('M=!M')
+            self.write('(' + end_eq + ')')
+            self.write('@3') #dummy line, just for end label
+
+        if command in {'gt', 'lt'}:
+            self.write('@SP //gt group')
+            self.write('M=M-1')
+            self.write('A=M')
+            self.write('D=M')
+            self.write('@R13') #y
+            self.write('M=D')
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('D=M')
+            self.write('@R14') #x
+            self.write('M=D')
+            x_neg = self.generate_helper_label()
+            same = self.generate_helper_label()
+            end = self.generate_helper_label()
+            self.write('@' + x_neg)
+            self.write('D;JLT')
+
+            # case x >= 0
+            self.write('@R13') #load y
+            self.write('D=M')
+            self.write('@' + same) #if y is positive, x, y have the same sign
+            self.write('D;JGE')
+            self.write('@SP') #y is negative
+            self.write('A=M-1')
+            if command == 'gt': self.write('M=-1')
+            else: self.write('M=0')
+            self.write('@' + end)
+            self.write('0;JMP')
+
+            # case x < 0
+            self.write('(' + x_neg + ')')
+            self.write('@R13') #D=y
+            self.write('D=M')
+            self.write('@' + same)
+            self.write('D;JLT')
+            self.write('') #now x<0 and y>0 so x<y
+            self.write('@SP')
+            self.write('A=M-1')
+            if command == 'lt': self.write('M=-1')
+            else: self.write('M=0')
+            self.write('@' + end)
+            self.write('0;JMP')
+
+            # case x, y have the same sign
+            self.write('(' + same + ')')  
+            self.write('@R13') #D=y
+            self.write('D=M')
+            self.write('@R14')
+            self.write('D=M-D') # D=x-y
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('M=-1')
+            self.write('@' + end)
+            if command == 'gt': self.write('D;JGT')
+            else: self.write('D;JLT')
+            self.write('@SP')
+            self.write('A=M-1')
+            self.write('M=!M')
+            self.write('(' + end + ')')
+            self.write('@3') #dummy line, just for end label
+
+
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:
         """Writes assembly code that is the translation of the given 
@@ -68,7 +183,100 @@ class CodeWriter:
         # be translated to the assembly symbol "Xxx.i". In the subsequent
         # assembly process, the Hack assembler will allocate these symbolic
         # variables to the RAM, starting at address 16.
-        pass
+        seg = {'local': 'LCL',
+               'argument': 'ARG',
+               'this': 'THIS',
+               'that': 'THAT'}
+        if command == 'C_POP':
+            self.write('//pop')
+            if segment in seg.keys():
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('M=D+M')
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + seg[segment])
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('M=M-D')
+            if segment == 'temp':
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + str(5 + index))
+                self.write('M=D')
+            if segment == 'static':
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + self.filename + '.' + str(index))
+                self.write('M=D')
+            if segment == 'pointer':
+                # if index == 0: th = 'THIS'
+                # else: th = 'THAT'
+                th = str(3 + index)
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@' + th)
+                self.write('M=D')
+        else:
+            self.write('//push')
+            if segment in seg.keys():
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@' + seg[segment])
+                self.write('A=D+M')
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'temp':
+                self.write('@' + str(5 + index))
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'static':
+                self.write('@' + self.filename + '.' + str(index))
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'pointer':
+                if index == 0: th = 'THIS'
+                else: th = 'THAT'
+                self.write('@' + th)
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+            if segment == 'constant':
+                self.write('@' + str(index))
+                self.write('D=A')
+                self.write('@SP')
+                self.write('A=M')
+                self.write('M=D')
+                self.write('@SP')
+                self.write('M=M+1')
+
 
     def write_label(self, label: str) -> None:
         """Writes assembly code that affects the label command. 

@@ -55,7 +55,16 @@ class Parser:
         # Your code goes here!
         # A good place to start is to read all the lines of the input:
         # input_lines = input_file.read().splitlines()
-        pass
+        input_lines = input_file.read().splitlines()
+        self.commands = []
+        for line in input_lines:
+            comment_index = line.find("//")
+            if comment_index >= 0: line = line[0:comment_index]
+            line = line.strip()
+            if line != "": self.commands.append(line)
+        self.current_line_number = -1
+        self.current_command = []
+
 
     def has_more_commands(self) -> bool:
         """Are there more commands in the input?
@@ -64,7 +73,8 @@ class Parser:
             bool: True if there are more commands, False otherwise.
         """
         # Your code goes here!
-        pass
+        return self.current_line_number < len(self.commands) - 1
+
 
     def advance(self) -> None:
         """Reads the next command from the input and makes it the current 
@@ -72,7 +82,9 @@ class Parser:
         there is no current command.
         """
         # Your code goes here!
-        pass
+        self.current_line_number += 1
+        self.current_command = self.commands[self.current_line_number].split()
+
 
     def command_type(self) -> str:
         """
@@ -84,7 +96,11 @@ class Parser:
             "C_RETURN", "C_CALL".
         """
         # Your code goes here!
-        pass
+        if len(self.current_command) == 1: return 'C_ARITHMETIC'
+        cmd_type = self.current_command[0]
+        if cmd_type == 'push': return 'C_PUSH'
+        if cmd_type == 'pop': return 'C_POP'
+
 
     def arg1(self) -> str:
         """
@@ -94,7 +110,10 @@ class Parser:
             Should not be called if the current command is "C_RETURN".
         """
         # Your code goes here!
-        pass
+        if self.command_type() == 'C_ARITHMETIC':
+            return self.current_command[0]
+        return self.current_command[1]
+
 
     def arg2(self) -> int:
         """
@@ -104,4 +123,4 @@ class Parser:
             "C_FUNCTION" or "C_CALL".
         """
         # Your code goes here!
-        pass
+        return int(self.current_command[2])

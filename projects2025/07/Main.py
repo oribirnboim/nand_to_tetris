@@ -13,7 +13,7 @@ from CodeWriter import CodeWriter
 
 
 def translate_file(
-        input_file: typing.TextIO, output_file: typing.TextIO) -> None:
+        input_file: typing.TextIO, input_filename: str, output_file: typing.TextIO) -> None:
     """Translates a single file.
 
     Args:
@@ -24,7 +24,18 @@ def translate_file(
     # It might be good to start with something like:
     # parser = Parser(input_file)
     # code_writer = CodeWriter(output_file)
-    pass
+    parser = Parser(input_file)
+    code_writer = CodeWriter(output_file, input_filename)
+    while parser.has_more_commands():
+        parser.advance()
+        cmd_type = parser.command_type()
+        if cmd_type == 'C_ARITHMETIC':
+            command = parser.arg1()
+            code_writer.write_arithmetic(command)
+        if cmd_type in {'C_PUSH', 'C_POP'}:
+            segment = parser.arg1()
+            index = parser.arg2()
+            code_writer.write_push_pop(cmd_type, segment, index)
 
 
 if "__main__" == __name__:
@@ -52,4 +63,5 @@ if "__main__" == __name__:
             if extension.lower() != ".vm":
                 continue
             with open(input_path, 'r') as input_file:
-                translate_file(input_file, output_file)
+                input_filename, input_extension = os.path.splitext(os.path.basename(input_file.name))
+                translate_file(input_file, input_filename,output_file)
