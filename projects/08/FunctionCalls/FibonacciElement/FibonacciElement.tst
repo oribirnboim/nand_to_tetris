@@ -1,11 +1,10 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/08/FunctionCalls/FibonacciElement/FibonacciElement.tst
+// This file is part of the materials accompanying the book
+// "The Elements of Computing Systems" by Nisan and Schocken, 
+// MIT Press 2004. Book site: http://www.idc.ac.il/tecs
+// File name: projects/08/FunctionCalls/FibonacciElement/FibonacciElement.tst.
+// Version: beta 1.4.
 
-// FibonacciElement.asm results from translating both Main.vm and Sys.vm into
-// a single assembly program, stored in the file FibonacciElement.asm.
-
+// FibonacciElement.asm is the result of translating both Main.vm and Sys.vm.
 load FibonacciElement.asm,
 output-file FibonacciElement.out,
 compare-to FibonacciElement.cmp,
