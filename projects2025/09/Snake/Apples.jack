@@ -62,9 +62,13 @@ class Apples{
     let i = square.getI();
     let j = square.getJ();
     let random = (random*i) + j;
-    let random = random - ((random/m)*m)
+    while (random > (m-1)){
+      let random = random - m;
+    }
     return;
   }
+
+
 
   method void addApple(){
     var int i;
@@ -77,6 +81,9 @@ class Apples{
     let i = random/numSquares;
     let j = random - (numSquares*i);
     let square = board.getSquare(i, j);
+    if (square.getType() = 2){
+      return;
+    }
     let apple = Apple.new(square);
     let loopCounter = 0;
     while (loopCounter < numApples){

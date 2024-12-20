@@ -106,6 +106,9 @@ label IF_FALSE4
 push this 2
 call Snake.move 1
 pop local 2
+push this 3
+call Apples.step 1
+pop temp 0
 push this 0
 call Board.printBoard 1
 pop temp 0
