@@ -14,7 +14,7 @@ class Main {
     //do Output.printString("good");
     var Game game;
     let game = Game.new();
-    do game.run();
+    do game.play();
     return;
   }
 }

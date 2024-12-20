@@ -70,6 +70,7 @@ class Snake{
     }
     let square = temp.getSquare();
     do square.setType(0);
+    do temp.dispose();
     do current.setNext(null);
     return 0;
   }

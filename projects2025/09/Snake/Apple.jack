@@ -2,7 +2,30 @@
 
 
 class Apple {
-    constructor Apple new(){
-        return this;
+  field Square square;
+  field int stepsLeft;
+
+  constructor Apple new(Square s){
+    let square = s;
+    let stepsLeft = 20;
+    do square.setType(1);
+    return this;
+  }
+
+  method void step(){
+    let stepsLeft = stepsLeft-1;
+    if (stepsLeft < 0){
+      do square.setType(0);
     }
+    return;
+  }
+
+  method boolean isThere(){
+    return square.getType() = 1;
+  }
+
+  method void dispose(){
+    do Memory.deAlloc(this);
+    return;
+  }
 }

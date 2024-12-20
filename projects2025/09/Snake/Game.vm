@@ -1,44 +1,50 @@
 function Game.new 0
-push constant 5
+push constant 6
 call Memory.alloc 1
 pop pointer 0
 call Board.new 0
 pop this 0
+push constant 150
+pop this 4
+push constant 20
+pop this 5
 push this 0
 call Snake.new 1
 pop this 2
 push this 0
 call Apples.new 1
 pop this 3
-push constant 200
-pop this 4
 push pointer 0
 return
-function Game.run 4
+function Game.play 5
 push argument 0
 pop pointer 0
 push constant 0
 pop local 1
+push this 4
+push this 5
+call Math.divide 2
+pop local 3
 label WHILE_EXP0
 push local 1
 not
 not
 if-goto WHILE_END0
-label WHILE_EXP1
-push local 0
 push constant 0
-eq
+pop local 4
+label WHILE_EXP1
+push local 4
+push this 5
+lt
 not
 if-goto WHILE_END1
 call Keyboard.keyPressed 0
 pop local 0
-push this 2
-call Snake.move 1
-pop local 3
-push this 0
-call Board.printBoard 1
-pop temp 0
-push this 4
+push local 4
+push constant 1
+add
+pop local 4
+push local 3
 call Sys.wait 1
 pop temp 0
 goto WHILE_EXP1
@@ -97,26 +103,12 @@ push constant 1
 call Snake.setDirection 2
 pop temp 0
 label IF_FALSE4
-label WHILE_EXP2
-push local 0
-push constant 0
-eq
-not
-not
-if-goto WHILE_END2
-call Keyboard.keyPressed 0
-pop local 0
 push this 2
 call Snake.move 1
-pop local 3
+pop local 2
 push this 0
 call Board.printBoard 1
 pop temp 0
-push this 4
-call Sys.wait 1
-pop temp 0
-goto WHILE_EXP2
-label WHILE_END2
 goto WHILE_EXP0
 label WHILE_END0
 push constant 0

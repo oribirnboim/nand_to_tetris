@@ -6,44 +6,42 @@ class Game{
   field Snake snake;
   field Apples apples;
   field int frameTime;
+  field int numSamples;
 
   constructor Game new(){
       let board = Board.new();
+      let frameTime = 150;
+      let numSamples = 20;
       let snake = Snake.new(board);
       let apples = Apples.new(board);
-      let frameTime = 200;
       return this;
   }
 
-  method void run(){
+  method void play(){
       var char key;  // the key currently pressed by the user
       var boolean exit;
-      var int direction;
       var int moveRes;
+      var int senseTime;
+      var int sampleCounter;
+
       let exit = false;
+      let senseTime = frameTime/numSamples;
 
       
       while (~exit) {
-         // waits for a key to be pressed
-         while (key = 0) {
-            let key = Keyboard.keyPressed();
-            let moveRes = snake.move();
-            do board.printBoard();
-            do Sys.wait(frameTime);
-         }
-         if (key = 81)  { let exit = true; }     // q key
-         if (key = 131) { do snake.setDirection(4); }   // up arrow
-         if (key = 133) { do snake.setDirection(3); }   // down arrow
-         if (key = 130) { do snake.setDirection(2); }   // left arrow
-         if (key = 132) { do snake.setDirection(1); }   // right arrow
-
-         // waits for the key to be released
-         while (~(key = 0)) {
-            let key = Keyboard.keyPressed();
-            let moveRes = snake.move();
-            do board.printBoard();
-            do Sys.wait(frameTime);
-         }
+        let sampleCounter = 0;
+        while (sampleCounter < numSamples){
+          let key = Keyboard.keyPressed();
+          let sampleCounter = sampleCounter + 1;
+          do Sys.wait(senseTime);
+        }
+        if (key = 81)  { let exit = true; }     // q key
+        if (key = 131) { do snake.setDirection(4); }   // up arrow
+        if (key = 133) { do snake.setDirection(3); }   // down arrow
+        if (key = 130) { do snake.setDirection(2); }   // left arrow
+        if (key = 132) { do snake.setDirection(1); }   // right arrow
+        let moveRes = snake.move();
+        do board.printBoard();
      } // while
      return;
   }
