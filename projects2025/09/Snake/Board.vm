@@ -1,0 +1,175 @@
+function Board.new 4
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 8
+pop this 3
+push this 3
+call Array.new 1
+pop this 2
+push constant 0
+pop local 2
+label WHILE_EXP0
+push local 2
+push this 3
+lt
+not
+if-goto WHILE_END0
+push this 3
+call Array.new 1
+pop local 0
+push constant 0
+pop local 3
+label WHILE_EXP1
+push local 3
+push this 3
+lt
+not
+if-goto WHILE_END1
+push local 3
+push local 0
+add
+push local 2
+push constant 10
+call Math.multiply 2
+push local 3
+push constant 10
+call Math.multiply 2
+push local 2
+push local 3
+push constant 0
+call Square.new 5
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 1
+add
+pop local 3
+goto WHILE_EXP1
+label WHILE_END1
+push local 2
+push this 2
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 2
+push constant 1
+add
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
+push pointer 0
+return
+function Board.getSquares 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Board.displayScore 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Board.displayText 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Board.drawOpening 0
+push argument 0
+pop pointer 0
+push constant 7
+call String.new 1
+push constant 111
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 103
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 0
+return
+function Board.getSquare 1
+push argument 0
+pop pointer 0
+push argument 1
+push this 2
+add
+pop pointer 1
+push that 0
+pop local 0
+push argument 2
+push local 0
+add
+pop pointer 1
+push that 0
+return
+function Board.getNumSquares 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Board.printBoard 3
+push argument 0
+pop pointer 0
+push constant 0
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 3
+lt
+not
+if-goto WHILE_END0
+push constant 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push this 3
+lt
+not
+if-goto WHILE_END1
+push pointer 0
+push local 0
+push local 1
+call Board.getSquare 3
+pop local 2
+push local 2
+call Square.getType 1
+call Output.printInt 1
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+call Output.println 0
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return

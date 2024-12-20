@@ -1,0 +1,38 @@
+
+
+
+
+class Square{
+  field int x;
+  field int y;
+  field int type;
+  field int i;
+  field in j;
+
+
+  constructor Square new(int x1, int y1, int i1, int j1, int type1){
+    let x = x1;
+    let y = y1;
+    let type = type1;
+    let i = i1;
+    let j = j1;
+    return this;
+  }
+
+  method int getType(){
+    return type;
+  }
+
+  method int getI(){
+    return i;
+  }
+
+  method int getJ(){
+    return j;
+  }
+
+  method void setType(int t){
+    let type = t;
+    return;
+  }
+}

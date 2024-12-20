@@ -1,0 +1,22 @@
+
+
+class Apples{
+    field Array apples;
+    field Board board;
+    field int numApples;
+
+    constructor Apples new(Board b){
+        let board = b;
+        let numApples = 0;
+        return this;
+    }
+
+    method void advance(){
+        return;
+    }
+
+    method void createApple(){
+        return;
+    }
+
+}

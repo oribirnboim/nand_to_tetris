@@ -11,9 +11,10 @@
   */
 class Main {
   function void main() {
-    // Your code goes here!
+    //do Output.printString("good");
+    var Game game;
+    let game = Game.new();
+    do game.run();
     return;
   }
-
-  // Your code goes here!
 }

@@ -1,0 +1,41 @@
+
+
+
+
+class List{
+  field Square square;
+  field List next;
+
+  constructor List new(Square s, List l){
+    let square = s;
+    let next = l;
+    return this;
+  }
+
+  method Square getSquare(){
+    return square;
+  }
+
+  method void setNext(List l){
+    let next = l;
+    return;
+  }
+
+  method List getNext(){
+    return next;
+  }
+
+  method void printList(){
+    var List current;
+    var Square square;
+    let current = this;
+    while (~(current = null)){
+      let square = current.getSquare();
+      do Output.printInt(square.getI());
+      do Output.printInt(square.getJ());
+      do Output.printChar(32);
+      let current = current.getNext();
+    }
+    return;
+  }
+}

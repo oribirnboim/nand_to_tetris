@@ -1,0 +1,92 @@
+
+
+
+
+class Snake{
+  field int direction;
+  field List head;
+  field Board board;
+  field int length;
+
+  method Square getHead(){
+    return head.getSquare();
+  }
+
+  method void printSnake(){
+    do head.printList();
+    return;
+  }
+
+  method int move(){
+    var int i;
+    var int j;
+    var int numSquares;
+    var int type;
+    var Square square;
+    var List current;
+    var List temp;
+    var boolean goOn;
+    let numSquares = board.getNumSquares();
+    let square = getHead();
+    let i = square.getI();
+    let j = square.getJ();
+    if (direction = 1) {
+      if (j = (numSquares-1)){
+        return -1;
+      }
+      let j = j+1;
+    }
+    if (direction = 2) {
+      if (j = 0){
+        return -1;
+      }
+      let j = j-1;
+    }
+    if (direction = 3) {
+      if (i = (numSquares-1)){
+        return -1;
+      }
+      let i = i+1;
+    }
+    if (direction = 4) {
+      if (j = 0){
+        return -1;
+      }    
+      let i = i-1;
+    }
+    let square = board.getSquare(i, j);
+    let type = square.getType();
+    do square.setType(2);
+    let head = List.new(square, head);
+    if (type = 1) {
+      let length = length+1;
+      return 1;
+    }
+    let current = head;
+    let temp = current.getNext();
+    while (~(temp.getNext() = null)) {
+      let temp = temp.getNext();
+      let current = current.getNext();
+    }
+    let square = temp.getSquare();
+    do square.setType(0);
+    do current.setNext(null);
+    return 0;
+  }
+
+  constructor Snake new(Board b){
+    var Square headSquare;
+    let board = b;
+    let length = 1;
+    let headSquare = board.getSquare(0, 0);
+    let head = List.new(headSquare, null);
+    do headSquare.setType(2);
+    let direction = 1; //right
+    return this;
+  }
+
+  method void setDirection(int d){
+    let direction = d;
+    return;
+  }
+}

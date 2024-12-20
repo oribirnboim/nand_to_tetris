@@ -1,0 +1,8 @@
+
+
+
+class Apple {
+    constructor Apple new(){
+        return this;
+    }
+}
