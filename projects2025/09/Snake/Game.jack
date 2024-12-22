@@ -27,6 +27,7 @@ class Game{
 
       let exit = false;
       let senseTime = frameTime/numSamples;
+      do board.printBoard();
 
       
       while (~exit) {
@@ -44,10 +45,9 @@ class Game{
         
         
         let moveRes = snake.move();
-        if (moveRes = -1) { do Output.printString("illegal move"); let exit = true;}
+        if (moveRes = -1) {let exit = true;}
 
         do apples.step();
-        do board.printBoard();
      } // while
      return;
   }

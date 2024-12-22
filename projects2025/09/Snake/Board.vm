@@ -125,294 +125,6 @@ push argument 0
 pop pointer 0
 push this 3
 return
-function Board.drawApple 0
-push argument 0
-pop pointer 0
-push argument 1
-push constant 3
-add
-push argument 2
-push argument 1
-push constant 5
-add
-push argument 2
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 1
-add
-push argument 1
-push constant 6
-add
-push argument 2
-push constant 1
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 3
-add
-push argument 2
-push constant 2
-add
-push argument 1
-push constant 5
-add
-push argument 2
-push constant 2
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 7
-add
-push argument 2
-push constant 2
-add
-push argument 1
-push constant 8
-add
-push argument 2
-push constant 2
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 8
-add
-push argument 2
-push constant 3
-add
-call Screen.drawPixel 2
-pop temp 0
-push argument 1
-push constant 3
-add
-push argument 2
-push constant 4
-add
-push argument 1
-push constant 6
-add
-push argument 2
-push constant 4
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 8
-add
-push argument 2
-push constant 4
-add
-push argument 1
-push constant 12
-add
-push argument 2
-push constant 4
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 3
-add
-push argument 2
-push constant 5
-add
-push argument 1
-push constant 13
-add
-push argument 2
-push constant 5
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 6
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 6
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 7
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 7
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 8
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 8
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 9
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 9
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 10
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 10
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 2
-add
-push argument 2
-push constant 11
-add
-push argument 1
-push constant 14
-add
-push argument 2
-push constant 11
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 3
-add
-push argument 2
-push constant 12
-add
-push argument 1
-push constant 13
-add
-push argument 2
-push constant 12
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 3
-add
-push argument 2
-push constant 13
-add
-push argument 1
-push constant 13
-add
-push argument 2
-push constant 13
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 4
-add
-push argument 2
-push constant 14
-add
-push argument 1
-push constant 12
-add
-push argument 2
-push constant 14
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 9
-add
-push argument 2
-push constant 15
-add
-push argument 1
-push constant 11
-add
-push argument 2
-push constant 15
-add
-call Screen.drawLine 4
-pop temp 0
-push argument 1
-push constant 4
-add
-push argument 2
-push constant 15
-add
-push argument 1
-push constant 6
-add
-push argument 2
-push constant 15
-add
-call Screen.drawLine 4
-pop temp 0
-push constant 0
-return
-function Board.drawSnake 1
-push argument 0
-pop pointer 0
-push argument 1
-pop local 0
-label WHILE_EXP0
-push local 0
-push constant 20
-lt
-not
-if-goto WHILE_END0
-push local 0
-push argument 2
-push local 0
-push argument 2
-push constant 19
-add
-call Screen.drawLine 4
-pop temp 0
-push local 0
-push constant 1
-add
-pop local 0
-goto WHILE_EXP0
-label WHILE_END0
-push constant 0
-return
 function Board.printBoard 5
 push argument 0
 pop pointer 0
@@ -443,37 +155,35 @@ push local 4
 call Square.getType 1
 pop local 3
 push local 3
-push constant 1
+push constant 0
 eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push pointer 0
-push constant 20
-push local 1
-call Math.multiply 2
-push constant 20
-push local 0
-call Math.multiply 2
-call Board.drawApple 3
+push local 4
+call Square.clearSquare 1
 pop temp 0
 label IF_FALSE0
 push local 3
-push constant 2
+push constant 1
 eq
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
-push pointer 0
-push constant 20
-push local 1
-call Math.multiply 2
-push constant 20
-push local 0
-call Math.multiply 2
-call Board.drawSnake 3
+push local 4
+call Square.drawApple 1
 pop temp 0
 label IF_FALSE1
+push local 3
+push constant 2
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 4
+call Square.drawSnake 1
+pop temp 0
+label IF_FALSE2
 push local 1
 push constant 1
 add

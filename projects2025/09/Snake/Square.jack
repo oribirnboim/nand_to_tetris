@@ -1,13 +1,10 @@
-
-
-
-
 class Square{
   field int x;
   field int y;
   field int type;
   field int i;
-  field in j;
+  field int j;
+  field int squareSize;
 
 
   constructor Square new(int x1, int y1, int i1, int j1, int type1){
@@ -16,6 +13,7 @@ class Square{
     let type = type1;
     let i = i1;
     let j = j1;
+    let squareSize = 20;
     return this;
   }
 
@@ -31,8 +29,57 @@ class Square{
     return j;
   }
 
-  method void setType(int t){
-    let type = t;
-    return;
+  method void drawApple (){
+      let x = i * squareSize;
+      let y = j * squareSize;
+      do Screen.setColor(true);
+
+
+      do Screen.drawLine(x + 3, y, x + 5,y);
+      do Screen.drawLine(x + 2, y + 1, x + 6,y + 1);
+      do Screen.drawLine(x + 3, y+2, x + 5,y+2);
+      do Screen.drawLine(x + 7, y+2, x + 8,y+2);
+      do Screen.drawPixel(x + 8, y + 3);
+      do Screen.drawLine(x + 3, y+4, x + 6,y + 4);
+      do Screen.drawLine(x + 8, y+4, x + 12,y+4);
+      do Screen.drawLine(x + 3, y+5, x + 13,y+5);
+      do Screen.drawLine(x + 2, y+6, x + 14,y+6);
+      do Screen.drawLine(x + 2, y+7, x + 14,y+7);
+      do Screen.drawLine(x + 2, y+8, x + 14,y+8);
+      do Screen.drawLine(x + 2, y+9, x + 14,y+9);
+      do Screen.drawLine(x + 2, y+10, x + 14,y+10);
+      do Screen.drawLine(x + 2, y+11, x + 14,y+11);
+      do Screen.drawLine(x + 3, y+12, x + 13,y+12);
+      do Screen.drawLine(x + 3, y+13, x + 13,y+13);
+      do Screen.drawLine(x + 4, y+14, x + 12,y+14);
+      do Screen.drawLine(x + 9, y+15, x + 11,y+15);
+      do Screen.drawLine(x + 4, y+15, x + 6,y+15);
+      return;
+    }
+
+
+    method void drawSnake(){
+      var int x;
+      
+      do Screen.setColor(true);
+      do screen.drawRectangle(i * squareSize, j * squareSize, (i + 1) * squareSize, (j+1) * squareSize);
+      return;
+    }
+
+    method void clearSquare(){
+      var int x;
+      
+      do Screen.setColor(true);
+      do screen.drawRectangle(i * squareSize, j * squareSize, (i + 1) * squareSize, (j+1) * squareSize);
+      return;
+    }
+
+
+    method void setType(int t){
+      let type = t;
+      if (type = 0) {do clearSquare();}
+      if (type = 1) {do drawApple();}
+      if (type = 2) {do drawSnake();}
+      return;
+    }
   }
-}

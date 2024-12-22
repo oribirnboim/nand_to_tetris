@@ -113,34 +113,6 @@ eq
 if-goto IF_TRUE5
 goto IF_FALSE5
 label IF_TRUE5
-push constant 12
-call String.new 1
-push constant 105
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 103
-call String.appendChar 2
-push constant 97
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-push constant 109
-call String.appendChar 2
-push constant 111
-call String.appendChar 2
-push constant 118
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
 push constant 0
 not
 pop local 1

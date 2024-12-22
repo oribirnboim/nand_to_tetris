@@ -31,7 +31,7 @@ class Apples{
 
 
 
-  method Square findSquare(){
+  method square findSquare(){
     var int i;
     var int j;
     var int numSquares;
