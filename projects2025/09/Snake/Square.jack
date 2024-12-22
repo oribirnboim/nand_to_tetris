@@ -7,13 +7,13 @@ class Square{
   field int squareSize;
 
 
-  constructor Square new(int x1, int y1, int i1, int j1, int type1){
+  constructor Square new(int x1, int y1, int i1, int j1, int type1, int size){
     let x = x1;
     let y = y1;
-    let type = type1;
     let i = i1;
     let j = j1;
-    let squareSize = 20;
+    let squareSize = size;
+    do setType(type1);
     return this;
   }
 
@@ -30,10 +30,7 @@ class Square{
   }
 
   method void drawApple (){
-      let x = i * squareSize;
-      let y = j * squareSize;
       do Screen.setColor(true);
-
 
       do Screen.drawLine(x + 3, y, x + 5,y);
       do Screen.drawLine(x + 2, y + 1, x + 6,y + 1);
@@ -59,18 +56,14 @@ class Square{
 
 
     method void drawSnake(){
-      var int x;
-      
       do Screen.setColor(true);
-      do screen.drawRectangle(i * squareSize, j * squareSize, (i + 1) * squareSize, (j+1) * squareSize);
+      do Screen.drawRectangle(x, y, x + squareSize, y + squareSize);
       return;
     }
 
-    method void clearSquare(){
-      var int x;
-      
-      do Screen.setColor(true);
-      do screen.drawRectangle(i * squareSize, j * squareSize, (i + 1) * squareSize, (j+1) * squareSize);
+    method void clearSquare(){      
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + squareSize, y + squareSize);
       return;
     }
 

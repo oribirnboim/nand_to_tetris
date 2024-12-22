@@ -1,9 +1,11 @@
 function Board.new 4
-push constant 4
+push constant 7
 call Memory.alloc 1
 pop pointer 0
 push constant 10
 pop this 3
+push constant 20
+pop this 6
 push this 3
 call Array.new 1
 pop this 2
@@ -29,16 +31,21 @@ if-goto WHILE_END1
 push local 3
 push local 0
 add
+push this 4
+push local 3
+push this 6
+call Math.multiply 2
+add
+push this 5
 push local 2
 push constant 10
 call Math.multiply 2
-push local 3
-push constant 10
-call Math.multiply 2
+add
 push local 2
 push local 3
 push constant 0
-call Square.new 5
+push this 6
+call Square.new 6
 pop temp 0
 pop pointer 1
 push temp 0
@@ -125,76 +132,10 @@ push argument 0
 pop pointer 0
 push this 3
 return
-function Board.printBoard 5
+function Board.printBoard 2
 push argument 0
 pop pointer 0
 call Screen.clearScreen 0
 pop temp 0
-push constant 0
-pop local 0
-label WHILE_EXP0
-push local 0
-push this 3
-lt
-not
-if-goto WHILE_END0
-push constant 0
-pop local 1
-label WHILE_EXP1
-push local 1
-push this 3
-lt
-not
-if-goto WHILE_END1
-push pointer 0
-push local 0
-push local 1
-call Board.getSquare 3
-pop local 4
-push local 4
-call Square.getType 1
-pop local 3
-push local 3
-push constant 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push local 4
-call Square.clearSquare 1
-pop temp 0
-label IF_FALSE0
-push local 3
-push constant 1
-eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push local 4
-call Square.drawApple 1
-pop temp 0
-label IF_FALSE1
-push local 3
-push constant 2
-eq
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push local 4
-call Square.drawSnake 1
-pop temp 0
-label IF_FALSE2
-push local 1
-push constant 1
-add
-pop local 1
-goto WHILE_EXP1
-label WHILE_END1
-push local 0
-push constant 1
-add
-pop local 0
-goto WHILE_EXP0
-label WHILE_END0
 push constant 0
 return

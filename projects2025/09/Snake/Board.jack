@@ -6,6 +6,9 @@ class Board {
   field String score;
   field Array squares;
   field int numSquares;
+  field int topX;
+  field int topY;
+  field int squareSize;
 
   constructor Board new(){
     var Array row;
@@ -13,13 +16,14 @@ class Board {
     var int i;
     var int j;
     let numSquares = 10; // in each row
+    let squareSize = 20;
     let squares = Array.new(numSquares);
     let i = 0;
     while (i < numSquares){
       let row = Array.new(numSquares);
       let j = 0;
       while (j < numSquares){
-        let row[j] = Square.new(Math.multiply(i, 10), Math.multiply(j, 10), i, j, 0);
+        let row[j] = Square.new(topX + Math.multiply(j, squareSize), topY + Math.multiply(i, 10), i, j, 0, squareSize);
         let j = j+1;
       }
       let squares[i] = row;
@@ -63,28 +67,7 @@ class Board {
   method void printBoard(){
     var int i;
     var int j;
-    var int k;
-    var int squareType;
-    var Square square;
     do Screen.clearScreen();
-
-    let i = 0;
-    while (i < numSquares){
-      let j = 0;
-      while (j<numSquares){
-        let square = getSquare(i, j);
-        let squareType = square.getType();
-        if (squareType = 0) {do square.clearSquare();}
-        if (squareType = 1) { do square.drawApple();}
-        if (squareType = 2) { do square.drawSnake();}
-
-        let j = j+1;
-      }
-
-      let i = i+1;
-    }
-
-
     return;
   }
 }

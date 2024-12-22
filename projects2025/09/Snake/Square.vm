@@ -6,14 +6,16 @@ push argument 0
 pop this 0
 push argument 1
 pop this 1
-push argument 4
-pop this 2
 push argument 2
 pop this 3
 push argument 3
 pop this 4
-push constant 20
+push argument 5
 pop this 5
+push pointer 0
+push argument 4
+call Square.setType 2
+pop temp 0
 push pointer 0
 return
 function Square.getType 0
@@ -34,14 +36,6 @@ return
 function Square.drawApple 0
 push argument 0
 pop pointer 0
-push this 3
-push this 5
-call Math.multiply 2
-pop this 0
-push this 4
-push this 5
-call Math.multiply 2
-pop this 1
 push constant 0
 not
 call Screen.setColor 1
@@ -304,57 +298,40 @@ call Screen.drawLine 4
 pop temp 0
 push constant 0
 return
-function Square.drawSnake 1
+function Square.drawSnake 0
 push argument 0
 pop pointer 0
 push constant 0
 not
 call Screen.setColor 1
 pop temp 0
-push this 3
+push this 0
+push this 1
+push this 0
 push this 5
-call Math.multiply 2
-push this 4
-push this 5
-call Math.multiply 2
-push this 3
-push constant 1
 add
+push this 1
 push this 5
-call Math.multiply 2
-push this 4
-push constant 1
 add
-push this 5
-call Math.multiply 2
-call screen.drawRectangle 4
+call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
-function Square.clearSquare 1
+function Square.clearSquare 0
 push argument 0
 pop pointer 0
 push constant 0
-not
 call Screen.setColor 1
 pop temp 0
-push this 3
+push this 0
+push this 1
+push this 0
 push this 5
-call Math.multiply 2
-push this 4
-push this 5
-call Math.multiply 2
-push this 3
-push constant 1
 add
+push this 1
 push this 5
-call Math.multiply 2
-push this 4
-push constant 1
 add
-push this 5
-call Math.multiply 2
-call screen.drawRectangle 4
+call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return

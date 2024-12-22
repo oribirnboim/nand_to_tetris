@@ -9,8 +9,8 @@ class Game{
 
   constructor Game new(){
       let board = Board.new();
-      let frameTime = 150;
-      let numSamples = 5;
+      let frameTime = 2000;
+      let numSamples = 10;
       let snake = Snake.new(board);
       let apples = Apples.new(board);
       return this;
@@ -27,7 +27,7 @@ class Game{
 
       let exit = false;
       let senseTime = frameTime/numSamples;
-      do board.printBoard();
+      //do board.printBoard();
 
       
       while (~exit) {
@@ -42,7 +42,6 @@ class Game{
         if (key = 133) { do snake.setDirection(3);}   // down arrow
         if (key = 130) { do snake.setDirection(2);}   // left arrow
         if (key = 132) { do snake.setDirection(1);}   // right arrow
-        
         
         let moveRes = snake.move();
         if (moveRes = -1) {let exit = true;}
