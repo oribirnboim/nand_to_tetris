@@ -9,7 +9,7 @@ class Game{
 
   constructor Game new(){
       let board = Board.new();
-      let frameTime = 2000;
+      let frameTime = 200;
       let numSamples = 10;
       let snake = Snake.new(board);
       let apples = Apples.new(board);

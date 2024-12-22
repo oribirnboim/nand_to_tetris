@@ -29,8 +29,6 @@ class Apples{
     return;
   }
 
-
-
   method square findSquare(){
     var int i;
     var int j;
@@ -52,7 +50,6 @@ class Apples{
     return board.getSquare(0, 0);
   }
 
-
   method void generateRandom(){
     var Square square;
     var int i;
@@ -69,8 +66,6 @@ class Apples{
     }
     return;
   }
-
-
 
   method void addApple(){
     var int i;

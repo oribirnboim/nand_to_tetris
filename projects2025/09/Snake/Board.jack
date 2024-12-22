@@ -9,21 +9,26 @@ class Board {
   field int topX;
   field int topY;
   field int squareSize;
+  field int borderWidth;
 
   constructor Board new(){
     var Array row;
     var Square square;
     var int i;
     var int j;
-    let numSquares = 10; // in each row
-    let squareSize = 20;
+    let numSquares = 12; // in each row
+    let squareSize = 16;
     let squares = Array.new(numSquares);
+    let borderWidth = 4;
+    let topX = 20;
+    let topY = 20;
+    do printBoard();
     let i = 0;
     while (i < numSquares){
       let row = Array.new(numSquares);
       let j = 0;
       while (j < numSquares){
-        let row[j] = Square.new(topX + Math.multiply(j, squareSize), topY + Math.multiply(i, 10), i, j, 0, squareSize);
+        let row[j] = Square.new(topX + Math.multiply(j, squareSize), topY + Math.multiply(i, squareSize), i, j, 0, squareSize);
         let j = j+1;
       }
       let squares[i] = row;
@@ -60,14 +65,34 @@ class Board {
     return numSquares;
   }
 
+  //method void writeText(String s){
+  //  var int maxLength;
+  //  let maxLength = 10;
 
-
-  
+  //  if (s.length() > maxLength){
+      
+  //  }
+  //  return;
+  //}
 
   method void printBoard(){
-    var int i;
-    var int j;
+    var int xTop;
+    var int yTop;
+    var int xBottom;
+    var int yBottom;
     do Screen.clearScreen();
+    do Screen.setColor(true);
+    let xTop = topX - borderWidth;
+    let yTop = topY - borderWidth;
+    let xBottom = topX + (numSquares * squareSize) + borderWidth;
+    let yBottom = topY + (numSquares * squareSize) + borderWidth;
+    do Screen.drawRectangle(xTop, yTop, xBottom, yBottom);
+    do Screen.setColor(false);
+    let xTop = topX;
+    let yTop = topY;
+    let xBottom = topX + (numSquares * squareSize);
+    let yBottom = topY + (numSquares * squareSize);
+    do Screen.drawRectangle(xTop, yTop, xBottom, yBottom);
     return;
   }
 }
