@@ -57,13 +57,13 @@ class Square{
 
     method void drawSnake(){
       do Screen.setColor(true);
-      do Screen.drawRectangle(x, y, x + squareSize, y + squareSize);
+      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
       return;
     }
 
     method void clearSquare(){      
       do Screen.setColor(false);
-      do Screen.drawRectangle(x, y, x + squareSize, y + squareSize);
+      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
       return;
     }
 

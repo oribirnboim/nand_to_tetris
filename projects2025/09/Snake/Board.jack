@@ -3,7 +3,12 @@
 
 class Board {
   field String text;
+  field int textI;
+  field int textJ;
+  field int textLength;
   field String score;
+  field int scoreI;
+  field int scoreJ;
   field Array squares;
   field int numSquares;
   field int topX;
@@ -22,6 +27,11 @@ class Board {
     let borderWidth = 4;
     let topX = 20;
     let topY = 20;
+    let textI = 5;
+    let textJ = 35;
+    let scoreI = 10;
+    let scoreJ = 45;
+    let textLength = 20;
     do printBoard();
     let i = 0;
     while (i < numSquares){
@@ -65,15 +75,50 @@ class Board {
     return numSquares;
   }
 
-  //method void writeText(String s){
-  //  var int maxLength;
-  //  let maxLength = 10;
+  method void clearText(){
+    var int loopCounter;
+    do Output.moveCursor(textI, textJ);
+    let loopCounter = 0;
+    while (loopCounter < textLength){
+      do Output.printChar(32);
+      let loopCounter = loopCounter + 1;
+    }
+    do Output.moveCursor(textI, textJ);
+    return;
+  }
 
-  //  if (s.length() > maxLength){
-      
-  //  }
-  //  return;
-  //}
+  method void writeText(String s){
+    let text = s;
+    do clearText();
+    if (s.length() > textLength){
+      do Output.printString("err");
+    }
+    else {
+      do Output.printString(s);
+    }
+    return;
+  }
+
+  method void clearScore(){
+    do Output.moveCursor(scoreI, scoreJ);
+    do Output.printChar(32);
+    do Output.printChar(32);
+    do Output.printChar(32);
+    do Output.moveCursor(scoreI, scoreJ);
+    return;
+  }
+
+    method void writeScore(int n){
+    let score = n;
+    do clearScore();
+    do Output.printInt(n);
+    return;
+  }
+
+  method void incScore(int n){
+    do writeScore(n);
+    return;
+  }
 
   method void printBoard(){
     var int xTop;
@@ -81,6 +126,8 @@ class Board {
     var int xBottom;
     var int yBottom;
     do Screen.clearScreen();
+    do writeText("a");
+    do writeScore(1);
     do Screen.setColor(true);
     let xTop = topX - borderWidth;
     let yTop = topY - borderWidth;
