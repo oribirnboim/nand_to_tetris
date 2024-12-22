@@ -9,7 +9,7 @@ class Apples{
   constructor Apples new(Board b){
     var int loopCounter;
     let board = b;
-    let numApples = 2;
+    let numApples = 3;
     let apples = Array.new(numApples);
     while (loopCounter < numApples){
       let apples[loopCounter] = null;
@@ -28,6 +28,8 @@ class Apples{
     do generateRandom();
     return;
   }
+
+
 
   method Square findSquare(){
     var int i;

@@ -55,6 +55,12 @@ class Snake{
       let i = i-1;
     }
     let square = board.getSquare(i, j);
+
+    // Check if the snake eats itself
+    if (square.getType() = 2) {
+        return -1; // Snake collided with itself
+    }
+
     let type = square.getType();
     do square.setType(2);
     let head = List.new(square, head);
@@ -86,8 +92,37 @@ class Snake{
     return this;
   }
 
-  method void setDirection(int d){
-    let direction = d;
-    return;
+  method int getDirection () {
+    return direction;
   }
+
+  method void setDirection(int d){
+    // disallowes back moves
+    if (d = 2) {
+      if (direction = 1){
+        return;
+      }
+    }
+        if (d = 1) {
+      if (direction = 2){
+        return;
+      }
+    }
+    if (d = 3) {
+      if (direction = 4){
+        return;
+      }
+    }
+    if (d = 4) {
+      if (direction = 3){
+        return;
+      }
+    }
+
+    
+    // changes direction
+    let direction = d;
+      return;
+  }
+
 }

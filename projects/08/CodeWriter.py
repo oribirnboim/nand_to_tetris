@@ -59,49 +59,114 @@ class CodeWriter:
 
 
     def write_arithmetic(self, command: str) -> None:
-        """Writes assembly code that is the translation of the given 
-        arithmetic command. For the commands eq, lt, gt, you should correctly
-        compare between all numbers our computer supports, and we define the
-        value "true" to be -1, and "false" to be 0.
+            """Writes assembly code that is the translation of the given 
+            arithmetic command. For the commands eq, lt, gt, you should correctly
+            compare between all numbers our computer supports, and we define the
+            value "true" to be -1, and "false" to be 0.
 
-        Args:
-            command (str): an arithmetic command.
-        """
-        # Your code goes here!
-        if command in {'add', 'sub', 'and', 'or'}:
-            self.write('@SP //add group')
-            self.write('M=M-1')
-            self.write('A=M')
-            self.write('D=M')
-            self.write('@SP')
-            self.write('A=M-1')
-            if command == 'add': self.write('M=D+M //add')
-            if command == 'sub': self.write('M=M-D //sub')
-            if command == 'and': self.write('M=D&M //and')
-            if command == 'or': self.write('M=D|M //or')
-        if command in {'neg', 'not'}:
-            self.write('@SP //neg group')
-            self.write('A=M-1')
-            if command == 'neg': self.write('M=-M')
-            else: self.write('M=!M')
-        if command in {'eq', 'gt', 'lt'}:
-            self.write('@SP //eq group')
-            self.write('M=M-1')
-            self.write('A=M')
-            self.write('D=M')
-            self.write('@SP')
-            self.write('A=M-1')
-            self.write('D=M-D')
-            lbl = self.generate_helper_label()
-            self.write('M=-1')
-            self.write('@' + lbl)
-            if command == 'eq': self.write('D;JEQ')
-            if command == 'gt': self.write('D;JGT')
-            if command == 'lt': self.write('D;JLT')
-            self.write('@SP')
-            self.write('A=M-1')
-            self.write('M=!M')
-            self.write('(' + lbl + ')')
+            Args:
+                command (str): an arithmetic command.
+            """
+            # Your code goes here!
+            if command in {'add', 'sub', 'and', 'or'}:
+                self.write('@SP //add group')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@SP')
+                self.write('A=M-1')
+                if command == 'add': self.write('M=D+M //add')
+                if command == 'sub': self.write('M=M-D //sub')
+                if command == 'and': self.write('M=D&M //and')
+                if command == 'or': self.write('M=D|M //or')
+            if command in {'neg', 'not'}:
+                self.write('@SP //neg group')
+                self.write('A=M-1')
+                if command == 'neg': self.write('M=-M')
+                elif command == 'not': self.write('M=!M')
+                elif command == 'shiftleft': self.write('M=M<<')
+                elif command == 'shiftright': self.write('M=M>>')
+            if command == 'eq':
+                end_eq = self.generate_helper_label()
+                self.write('@SP')
+                self.write('M=M-1')
+                self.write('A=M-1')
+                self.write('D=M') #D=x
+                self.write('A=A+1')
+                self.write('D=D-M') #D=x-y
+                self.write('A=A-1')
+                self.write('M=-1')
+                self.write('@' + end_eq)
+                if command == 'eq': self.write('D;JEQ')
+                else: self.write('D;JLT')
+                self.write('@SP')
+                self.write('A=M-1')
+                self.write('M=!M')
+                self.write('(' + end_eq + ')')
+                self.write('@3') #dummy line, just for end label
+
+            if command in {'gt', 'lt'}:
+                self.write('@SP //gt group')
+                self.write('M=M-1')
+                self.write('A=M')
+                self.write('D=M')
+                self.write('@R13') #y
+                self.write('M=D')
+                self.write('@SP')
+                self.write('A=M-1')
+                self.write('D=M')
+                self.write('@R14') #x
+                self.write('M=D')
+                x_neg = self.generate_helper_label()
+                same = self.generate_helper_label()
+                end = self.generate_helper_label()
+                self.write('@' + x_neg)
+                self.write('D;JLT')
+
+                # case x >= 0
+                self.write('@R13') #load y
+                self.write('D=M')
+                self.write('@' + same) #if y is positive, x, y have the same sign
+                self.write('D;JGE')
+                self.write('@SP') #y is negative
+                self.write('A=M-1')
+                if command == 'gt': self.write('M=-1')
+                else: self.write('M=0')
+                self.write('@' + end)
+                self.write('0;JMP')
+
+                # case x < 0
+                self.write('(' + x_neg + ')')
+                self.write('@R13') #D=y
+                self.write('D=M')
+                self.write('@' + same)
+                self.write('D;JLT')
+                self.write('') #now x<0 and y>0 so x<y
+                self.write('@SP')
+                self.write('A=M-1')
+                if command == 'lt': self.write('M=-1')
+                else: self.write('M=0')
+                self.write('@' + end)
+                self.write('0;JMP')
+
+                # case x, y have the same sign
+                self.write('(' + same + ')')  
+                self.write('@R13') #D=y
+                self.write('D=M')
+                self.write('@R14')
+                self.write('D=M-D') # D=x-y
+                self.write('@SP')
+                self.write('A=M-1')
+                self.write('M=-1')
+                self.write('@' + end)
+                if command == 'gt': self.write('D;JGT')
+                else: self.write('D;JLT')
+                self.write('@SP')
+                self.write('A=M-1')
+                self.write('M=!M')
+                self.write('(' + end + ')')
+                self.write('@3') #dummy line, just for end label
+
 
 
     def write_push_pop(self, command: str, segment: str, index: int) -> None:

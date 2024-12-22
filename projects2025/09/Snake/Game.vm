@@ -6,7 +6,7 @@ call Board.new 0
 pop this 0
 push constant 150
 pop this 4
-push constant 20
+push constant 5
 pop this 5
 push this 0
 call Snake.new 1
@@ -16,7 +16,7 @@ call Apples.new 1
 pop this 3
 push pointer 0
 return
-function Game.play 5
+function Game.play 7
 push argument 0
 pop pointer 0
 push constant 0
@@ -106,6 +106,45 @@ label IF_FALSE4
 push this 2
 call Snake.move 1
 pop local 2
+push local 2
+push constant 1
+neg
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 12
+call String.new 1
+push constant 105
+call String.appendChar 2
+push constant 108
+call String.appendChar 2
+push constant 108
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 103
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 108
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 118
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 0
+not
+pop local 1
+label IF_FALSE5
 push this 3
 call Apples.step 1
 pop temp 0

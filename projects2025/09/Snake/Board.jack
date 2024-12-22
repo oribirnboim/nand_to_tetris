@@ -12,7 +12,7 @@ class Board {
     var Square square;
     var int i;
     var int j;
-    let numSquares = 8;
+    let numSquares = 10;
     let squares = Array.new(numSquares);
     let i = 0;
     while (i < numSquares){
@@ -56,22 +56,71 @@ class Board {
     return numSquares;
   }
 
+
+  method void drawApple (int i, int j){
+
+    do Screen.drawLine(i + 3, j, i + 5,j);
+    do Screen.drawLine(i + 2, j + 1, i + 6,j + 1);
+    do Screen.drawLine(i + 3, j+2, i + 5,j+2);
+    do Screen.drawLine(i + 7, j+2, i + 8,j+2);
+    do Screen.drawPixel(i + 8, j + 3);
+    do Screen.drawLine(i + 3, j+4, i + 6,j+4);
+    do Screen.drawLine(i + 8, j+4, i + 12,j+4);
+    do Screen.drawLine(i + 3, j+5, i + 13,j+5);
+    do Screen.drawLine(i + 2, j+6, i + 14,j+6);
+    do Screen.drawLine(i + 2, j+7, i + 14,j+7);
+    do Screen.drawLine(i + 2, j+8, i + 14,j+8);
+    do Screen.drawLine(i + 2, j+9, i + 14,j+9);
+    do Screen.drawLine(i + 2, j+10, i + 14,j+10);
+    do Screen.drawLine(i + 2, j+11, i + 14,j+11);
+    do Screen.drawLine(i + 3, j+12, i + 13,j+12);
+    do Screen.drawLine(i + 3, j+13, i + 13,j+13);
+    do Screen.drawLine(i + 4, j+14, i + 12,j+14);
+    do Screen.drawLine(i + 9, j+15, i + 11,j+15);
+    do Screen.drawLine(i + 4, j+15, i + 6,j+15);
+    return;
+  }
+
+
+  method void drawSnake(int i,int j){
+    var int x;
+    
+    let x = i;
+
+    while (x < 20){
+      do Screen.drawLine(x, j, x,j + 19);
+      let x = x+1;
+    }
+    return;
+  }
+  
+
   method void printBoard(){
     var int i;
     var int j;
+    var int k;
+    var int squareType;
     var Square square;
-    do Output.moveCursor(0, 0);
+    do Screen.clearScreen();
+
+
+
     let i = 0;
     while (i < numSquares){
       let j = 0;
       while (j<numSquares){
         let square = getSquare(i, j);
-        do Output.printInt(square.getType());
+        let squareType = square.getType();
+        if (squareType = 1) { do drawApple(20 * j, 20 * i);}
+        if (squareType = 2) { do drawSnake(20 * j, 20 * i);}
+
         let j = j+1;
       }
-      do Output.println();
+
       let i = i+1;
     }
+
+
     return;
   }
 }

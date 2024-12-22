@@ -4,7 +4,7 @@ call Memory.alloc 1
 pop pointer 0
 push argument 0
 pop this 1
-push constant 2
+push constant 3
 pop this 2
 push this 2
 call Array.new 1
