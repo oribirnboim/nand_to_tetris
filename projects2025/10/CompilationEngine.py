@@ -13,7 +13,7 @@ class CompilationEngine:
     output stream.
     """
 
-    def __init__(self, input_stream: "JackTokenizer", output_stream) -> None:
+    def __init__(self, input_stream, output_stream) -> None:
         """
         Creates a new compilation engine with the given input and output. The
         next routine called must be compileClass()
@@ -103,32 +103,94 @@ class CompilationEngine:
     def compile_do(self) -> None:
         """Compiles a do statement."""
         # Your code goes here!
-        pass
+        self.write('<doStatement>')
+        self.recurtion_depth += 1
+        self.process('do')
+        self.compile_expression()
+        self.recurtion_depth -= 1
+        self.write('</doStatement>')
 
     def compile_let(self) -> None:
         """Compiles a let statement."""
         # Your code goes here!
-        pass
+        self.write('<letStatement>')
+        self.recurtion_depth += 1
+        self.process('let')
+        identifier = self.input_stream.identifier()
+        self.write('<identifier> ' + identifier + ' </identifier>')
+        self.input_stream.advance()
+        if self.input_stream.token_type()=='SYMBOL':
+            self.process('[')
+            self.compile_expression()
+            self.process(']')
+        self.process('=')
+        self.compile_expression()
+        self.process(';')
+        self.recurtion_depth -= 1
+        self.write('</letStatement>')
 
     def compile_while(self) -> None:
         """Compiles a while statement."""
         # Your code goes here!
-        pass
+        self.write('<whileStatement>')
+        self.recurtion_depth += 1
+        self.process('while')
+        self.process('(')
+        self.compile_expression()
+        self.process(')')
+        self.process('{')
+        self.compile_statements()
+        self.process('}')
+        self.recurtion_depth -= 1
+        self.write('</whileStatement>')
 
     def compile_return(self) -> None:
         """Compiles a return statement."""
         # Your code goes here!
-        pass
+        self.write('<returnStatement>')
+        self.recurtion_depth += 1
+        self.process('return')
+        type = self.input_stream.token_type()
+        if type != "SYMBOL":
+            self.compile_expression()
+        self.process('}')
+        self.recurtion_depth -= 1
+        self.write('</returnStatement>')
 
     def compile_if(self) -> None:
         """Compiles a if statement, possibly with a trailing else clause."""
         # Your code goes here!
-        pass
+        self.write('<ifStatement>')
+        self.recurtion_depth += 1
+        self.process('if')
+        self.process('(')
+        self.compile_expression()
+        self.process(')')
+        self.process('{')
+        self.compile_statements()
+        self.process('}')
+        if self.input_stream.token_type()=='KEYWORD':
+            if self.input_stream.keword()=='ELSE':
+                self.process('else')
+                self.process('{')
+                self.compile_statements()
+                self.process('}')
+        self.recurtion_depth -= 1
+        self.write('</ifStatement>')
 
     def compile_expression(self) -> None:
         """Compiles an expression."""
         # Your code goes here!
-        pass
+        ops = {'+', '-', '*', '/', '&', '|', '<', '>', '='}
+        self.write('<expression>')
+        self.recurtion_depth += 1
+        self.compile_term()
+        while self.input_stream.token_type()=='SYMBOL' and (self.input_stream.symbol() in ops):
+            op = self.input_stream.symbol()
+            self.process(op)
+            self.compile_term()
+        self.recurtion_depth -= 1
+        self.write('</expression>')
 
     def compile_term(self) -> None:
         """Compiles a term. 
