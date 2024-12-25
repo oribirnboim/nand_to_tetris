@@ -62,7 +62,7 @@ class CompilationEngine:
     def process(self, token: str):
         type = self.input_stream.token_type()
         if type == "KEYWORD":
-            current = self.input_stream.keyword()
+            current = self.input_stream.keyword().lower()
             self.write('<keyword> ' + current + ' </keyword>')
         if type == "SYMBOL":
             current = self.input_stream.symbol()
@@ -110,7 +110,22 @@ class CompilationEngine:
         "{}".
         """
         # Your code goes here!
-        pass
+        self.write('<statements>')
+        self.recurtion_depth += 1
+        while not self.input_stream.token_type() == "SYMBOL":
+            keyword = self.input_stream.keyword()
+            if keyword == 'IF':
+                self.compile_if()
+            if keyword == 'LET':
+                self.compile_let()
+            if keyword == 'RETURN':
+                self.compile_return()
+            if keyword == "WHILE":
+                self.compile_while()
+            if keyword == "DO":
+                self.compile_do()
+        self.recurtion_depth -= 1
+        self.write('</statements>')
 
     def compile_do(self) -> None:
         """Compiles a do statement."""
@@ -215,19 +230,64 @@ class CompilationEngine:
         part of this term and should not be advanced over.
         """
         # Your code goes here!
+        keyword_constants = {'true', 'false', 'this', 'that'}
+        unary_ops = {'-', '~', '^', '#'}
         self.write('<term>')
         self.recurtion_depth += 1
         type = self.input_stream.token_type()
         if type == "INT_CONST":
             self.write('<integerConstant> ' + self.input_stream.int_val() + ' </integerConstant>')
-        
+            self.input_stream.advance()
+        if type == "STRING_CONST":
+            self.write('<stringConstant> ' + self.input_stream.string_val() + ' </stringConstant>')
+            self.input_stream.advance()
+        if type == "KEYWORD" and (self.input_stream.keyword().lower() in keyword_constants):
+            self.write('<keyword> ' + self.input_stream.keyword().lower() + ' </keyword>')
+            self.input_stream.advance()
+        if type == "SYMBOL":
+            if self.input_stream.symbol() in unary_ops:
+                self.write('<symbol> ' + self.input_stream.symbol() + ' </symbol>')
+                self.input_stream.advance()
+                self.compile_term()
+            else:
+                self.process('(')
+                self.compile_expression()
+                self.process(')')
+        if type == "IDENTIFIER":
+            self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
+            self.input_stream.advance()
+            if self.input_stream.token_type() == "SYMBOL":
+                symbol = self.input_stream.symbol()
+                if symbol == '.':
+                    self.process('.')
+                    self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
+                    self.process('(')
+                    self.compile_expression_list()
+                    self.process(')')
+                if symbol == '[':
+                    self.process('[')
+                    self.compile_expression()
+                    self.process(']')
+                if symbol == '(':
+                    self.process('(')
+                    self.compile_expression_list()
+                    self.process(')')
         self.recurtion_depth += 1
         self.write('</term>')
-
-        
-            
 
     def compile_expression_list(self) -> None:
         """Compiles a (possibly empty) comma-separated list of expressions."""
         # Your code goes here!
-        pass
+        self.write('<expressionList>')
+        self.recurtion_depth += 1
+        while True:
+            if self.input_stream.token_type() == 'SYMBOL':
+                symbol = self.input_stream.symbol()
+                if symbol == ')':
+                    break
+                if symbol == ',':
+                    self.process(',')
+            else:
+                self.compile_expression()
+        self.recurtion_depth -= 1
+        self.write('</expressionList>')
