@@ -32,7 +32,6 @@ class CompilationEngine:
         """Compiles a complete class."""
 
         self.write("<class>")
-    
         self.recurtion_depth += 1
         
         self.write(f"<keyword> class </keyword>")
@@ -47,9 +46,9 @@ class CompilationEngine:
 
         while self.output_stream.tokentype() == "KEYWORD":
             token_value = self.output_stream.keyword()
-            if token_value in {"field","var"}:
+            if token_value in {"field","static"}:
                 self.compile_class_var_dec()
-            elif token_value in {"static, method", "constructor"}:
+            elif token_value in {"method", "constructor"}:
                 self.compile_subroutine()
             else:
                 print("syntax error - class function that isnt varDec or subroutine.")
@@ -58,14 +57,20 @@ class CompilationEngine:
 
         self.recurtion_depth -= 1
         self.write("</class>")     
-        self.input_stream.advance()   
-        
-
 
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
-        # Your code goes here!
-        pass
+        self.write("<classVarDec>")
+        self.recurtion_depth += 1
+
+        dec_type = self.output_stream.keyword()
+        self.process(dec_type)
+
+        var_type = self.output_stream.token_type()
+        if var_type == "KEYWORD":
+            
+
+        
 
     def compile_subroutine(self) -> None:
         """
