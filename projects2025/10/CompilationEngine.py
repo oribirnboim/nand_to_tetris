@@ -57,6 +57,18 @@ class CompilationEngine:
 
         self.recurtion_depth -= 1
         self.write("</class>")     
+        self.input_stream.advance()   
+        
+    def process(self, token: str):
+        type = self.input_stream.token_type()
+        if type == "KEYWORD":
+            current = self.input_stream.keyword()
+            self.write('<keyword> ' + current + ' </keyword>')
+        if type == "SYMBOL":
+            current = self.input_stream.symbol()
+            self.write('<symbol> ' + current + ' </symbol>')
+        if current != token: print('expected ' + token + ', got '+ current)
+        self.input_stream.advance()
 
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
@@ -205,7 +217,17 @@ class CompilationEngine:
         part of this term and should not be advanced over.
         """
         # Your code goes here!
-        pass
+        self.write('<term>')
+        self.recurtion_depth += 1
+        type = self.input_stream.token_type()
+        if type == "INT_CONST":
+            self.write('<integerConstant> ' + self.input_stream.int_val() + ' </integerConstant>')
+        
+        self.recurtion_depth += 1
+        self.write('</term>')
+
+        
+            
 
     def compile_expression_list(self) -> None:
         """Compiles a (possibly empty) comma-separated list of expressions."""
