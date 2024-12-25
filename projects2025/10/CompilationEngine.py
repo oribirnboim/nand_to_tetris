@@ -205,7 +205,26 @@ class CompilationEngine:
         "{}".
         """
         # Your code goes here!
-        pass
+        self.write("<statements>")
+        self.recurtion_depth += 1
+
+        token_type = self.input_stream.token_type()
+        while token_type == "KEYWORD":
+            statement_kind = self.input_stream.keyword()
+            if statement_kind == "if":
+                self.compile_if()
+            elif statement_kind == "while":
+                self.compile_while()
+            elif statement_kind == "let":
+                self.compile_let()
+            elif statement_kind == "do":
+                self.compile_do()
+            elif statement_kind == "return":
+                self.compile_return()
+            token_type = self.input_stream.token_type()
+        
+        self.recurtion_depth -= 1
+        self.write("</statements>")
 
     def compile_do(self) -> None:
         """Compiles a do statement."""
