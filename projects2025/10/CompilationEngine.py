@@ -78,8 +78,10 @@ class CompilationEngine:
         dec_type = self.output_stream.keyword()
         self.process(dec_type)
 
-        var_type = self.output_stream.token_type()
-        if var_type == "KEYWORD":
+        var_kind = self.output_stream.token_type()
+        if var_kind == "KEYWORD":
+            var_type = self.output_stream.keyword()
+            self.process
             
 
         
