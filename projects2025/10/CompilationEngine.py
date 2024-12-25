@@ -20,15 +20,24 @@ class CompilationEngine:
         :param input_stream: The input stream.
         :param output_stream: The output stream.
         """
-        # Your code goes here!
-        # Note that you can write to output_stream like so:
-        # output_stream.write("Hello world! \n")
-        pass
+        self.input_stream = input_stream 
+        self.output_stream = output_stream
+                
+        self.recurtion_depth = 0 # used to count the number of tabs
+
+    def write(self, str: string) -> None:
+        self.output_stream.write(("\t" * self.recurtion_depth) + str)
 
     def compile_class(self) -> None:
         """Compiles a complete class."""
-        # Your code goes here!
-        pass
+
+        self.write("<class>")
+        self.recurtion_depth += 1
+        self.write(f"<keyword> class </keyword>")
+        self.input_stream.advance()
+
+
+
 
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
