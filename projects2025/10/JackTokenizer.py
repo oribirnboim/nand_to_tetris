@@ -265,3 +265,6 @@ class JackTokenizer:
                 if on: continue
                 return [input[:i]] + self.split_except_strings(input[i+1:])
         return []
+    
+    def get_value(self) -> str:
+        return self.current

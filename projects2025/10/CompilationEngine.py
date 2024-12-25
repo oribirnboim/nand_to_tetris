@@ -26,26 +26,40 @@ class CompilationEngine:
         self.recurtion_depth = 0 # used to count the number of tabs
 
     def write(self, string: str) -> None:
-        self.output_stream.write(("\t" * self.recurtion_depth) + string)
+        self.output_stream.write(("\t" * self.recurtion_depth) + string + "/n") 
 
     def compile_class(self) -> None:
         """Compiles a complete class."""
 
         self.write("<class>")
+    
         self.recurtion_depth += 1
+        
         self.write(f"<keyword> class </keyword>")
         self.input_stream.advance()
 
-    def process(self, token: str):
-        type = self.input_stream.token_type()
-        if type == "SYMBOL":
-            current = self.input_stream.symbol()
-            self.write('<symbol> ' + current + ' </symbol>')
-        if type == "KEYWORD":
-            current = self.input_stream.keyword().lower()
-            self.write('<keyword> ' + current + ' </keyword>')
-        self.input_stream.advance()
-        if token!=current: print('expecting ' + token + ', got ' + current)
+        class_name = self.input_stream.identifier() 
+        self.write(f"<identifier>{class_name}</identifier>")
+        self.advance()
+
+        self.write("<symbol> { </symbol>")
+        self.output_stream.advance()
+
+        while self.output_stream.tokentype() == "KEYWORD":
+            token_value = self.output_stream.keyword()
+            if token_value in {"field","var"}:
+                self.compile_class_var_dec()
+            elif token_value in {"static, method", "constructor"}:
+                self.compile_subroutine()
+            else:
+                print("syntax error - class function that isnt varDec or subroutine.")
+
+        self.process("}")
+
+        self.recurtion_depth -= 1
+        self.write("</class>")     
+        self.input_stream.advance()   
+        
 
 
     def compile_class_var_dec(self) -> None:
