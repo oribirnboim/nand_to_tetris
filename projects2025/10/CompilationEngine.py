@@ -23,10 +23,10 @@ class CompilationEngine:
         self.input_stream = input_stream 
         self.output_stream = output_stream
                 
-        self.recurtion_depth = 0 # used to count the number of tabs
+        self.tab_number = 0 # used to count the number of tabs
 
     def write(self, string: str) -> None:
-        self.output_stream.write(("\t" * self.recurtion_depth) + string + "/n") 
+        self.output_stream.write(("\t" * self.tab_number) + string + "/n") 
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
@@ -51,7 +51,7 @@ class CompilationEngine:
         """Compiles a complete class."""
 
         self.write("<class>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
         
         self.process("class")
         self.input_stream.advance()
@@ -72,14 +72,14 @@ class CompilationEngine:
 
         self.process("}")
 
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</class>")     
         self.input_stream.advance()   
         
     def process(self, token: str) -> None:
         type = self.input_stream.token_type()
         if type == "KEYWORD":
-            current = self.input_stream.keyword()
+            current = self.input_stream.keyword().lower()
             self.write('<keyword> ' + current + ' </keyword>')
         if type == "SYMBOL":
             current = self.input_stream.symbol()
@@ -90,7 +90,7 @@ class CompilationEngine:
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
         self.write("<classVarDec>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
 
         # handles (static|field) section
         dec_type = self.input_stream.keyword()
@@ -110,7 +110,7 @@ class CompilationEngine:
         
         self.process(";")
 
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</classVarDec>")
 
     def compile_subroutine(self) -> None:
@@ -120,7 +120,7 @@ class CompilationEngine:
         you will understand why this is necessary in project 11.
         """
         self.write("<subroutineDec>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
         
         subroutine_type = self.input_stream.keyword()
         self.process(subroutine_type)
@@ -134,8 +134,7 @@ class CompilationEngine:
         self.input_stream.advance()
 
         subroutine_name = self.input_stream.identifier()
-        self.write(subroutine_name)
-        self.
+        self.write_identifier(subroutine_name)
 
         self.process("(")
         
@@ -151,7 +150,7 @@ class CompilationEngine:
 
         self.process("}")
     
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</subroutineDec>")
 
     def compile_parameter_list(self) -> None:
@@ -172,16 +171,16 @@ class CompilationEngine:
 
         self.process(")")
 
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</parameterList>")
 
     def compile_var_dec(self) -> None:
         """Compiles a var declaration."""
         self.write("<varDec>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
 
         self.write("<parameterList>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
 
         self.process("var")
 
@@ -197,7 +196,7 @@ class CompilationEngine:
         self.process(")")            
         
 
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</parameterList>")
 
     def compile_statements(self) -> None:
@@ -206,11 +205,11 @@ class CompilationEngine:
         """
         # Your code goes here!
         self.write("<statements>")
-        self.recurtion_depth += 1
+        self.tab_number += 1
 
         token_type = self.input_stream.token_type()
         while token_type == "KEYWORD":
-            statement_kind = self.input_stream.keyword()
+            statement_kind = self.input_stream.keyword().lower()
             if statement_kind == "if":
                 self.compile_if()
             elif statement_kind == "while":
@@ -223,24 +222,24 @@ class CompilationEngine:
                 self.compile_return()
             token_type = self.input_stream.token_type()
         
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write("</statements>")
 
     def compile_do(self) -> None:
         """Compiles a do statement."""
         # Your code goes here!
         self.write('<doStatement>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.process('do')
         self.compile_expression()
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</doStatement>')
 
     def compile_let(self) -> None:
         """Compiles a let statement."""
         # Your code goes here!
         self.write('<letStatement>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.process('let')
         identifier = self.input_stream.identifier()
         self.write('<identifier> ' + identifier + ' </identifier>')
@@ -252,14 +251,14 @@ class CompilationEngine:
         self.process('=')
         self.compile_expression()
         self.process(';')
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</letStatement>')
 
     def compile_while(self) -> None:
         """Compiles a while statement."""
         # Your code goes here!
         self.write('<whileStatement>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.process('while')
         self.process('(')
         self.compile_expression()
@@ -267,27 +266,27 @@ class CompilationEngine:
         self.process('{')
         self.compile_statements()
         self.process('}')
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</whileStatement>')
 
     def compile_return(self) -> None:
         """Compiles a return statement."""
         # Your code goes here!
         self.write('<returnStatement>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.process('return')
         type = self.input_stream.token_type()
         if type != "SYMBOL":
             self.compile_expression()
         self.process('}')
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</returnStatement>')
 
     def compile_if(self) -> None:
         """Compiles a if statement, possibly with a trailing else clause."""
         # Your code goes here!
         self.write('<ifStatement>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.process('if')
         self.process('(')
         self.compile_expression()
@@ -301,7 +300,7 @@ class CompilationEngine:
                 self.process('{')
                 self.compile_statements()
                 self.process('}')
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</ifStatement>')
 
     def compile_expression(self) -> None:
@@ -309,7 +308,7 @@ class CompilationEngine:
         # Your code goes here!
         ops = {'+', '-', '*', '/', '&', '|', '<', '>', '='}
         self.write('<expression>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         self.compile_term()
         while self.input_stream.token_type()=='SYMBOL' and (self.input_stream.symbol() in ops):
             op = self.input_stream.symbol()
@@ -319,7 +318,7 @@ class CompilationEngine:
             self.write('<symbol> ' + op + ' </symbol>')
             self.input_stream.advance()
             self.compile_term()
-        self.recurtion_depth -= 1
+        self.tab_number -= 1
         self.write('</expression>')
 
     def compile_term(self) -> None:
@@ -333,16 +332,64 @@ class CompilationEngine:
         part of this term and should not be advanced over.
         """
         # Your code goes here!
+        keyword_constants = {'true', 'false', 'this', 'that'}
+        unary_ops = {'-', '~', '^', '#'}
         self.write('<term>')
-        self.recurtion_depth += 1
+        self.tab_number += 1
         type = self.input_stream.token_type()
         if type == "INT_CONST":
             self.write('<integerConstant> ' + self.input_stream.int_val() + ' </integerConstant>')
-        
-        self.recurtion_depth += 1
+            self.input_stream.advance()
+        if type == "STRING_CONST":
+            self.write('<stringConstant> ' + self.input_stream.string_val() + ' </stringConstant>')
+            self.input_stream.advance()
+        if type == "KEYWORD" and (self.input_stream.keyword().lower() in keyword_constants):
+            self.write('<keyword> ' + self.input_stream.keyword().lower() + ' </keyword>')
+            self.input_stream.advance()
+        if type == "SYMBOL":
+            if self.input_stream.symbol() in unary_ops:
+                self.write('<symbol> ' + self.input_stream.symbol() + ' </symbol>')
+                self.input_stream.advance()
+                self.compile_term()
+            else:
+                self.process('(')
+                self.compile_expression()
+                self.process(')')
+        if type == "IDENTIFIER":
+            self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
+            self.input_stream.advance()
+            if self.input_stream.token_type() == "SYMBOL":
+                symbol = self.input_stream.symbol()
+                if symbol == '.':
+                    self.process('.')
+                    self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
+                    self.process('(')
+                    self.compile_expression_list()
+                    self.process(')')
+                if symbol == '[':
+                    self.process('[')
+                    self.compile_expression()
+                    self.process(']')
+                if symbol == '(':
+                    self.process('(')
+                    self.compile_expression_list()
+                    self.process(')')
+        self.tab_number += 1
         self.write('</term>')
 
     def compile_expression_list(self) -> None:
         """Compiles a (possibly empty) comma-separated list of expressions."""
         # Your code goes here!
-        pass
+        self.write('<expressionList>')
+        self.tab_number += 1
+        while True:
+            if self.input_stream.token_type() == 'SYMBOL':
+                symbol = self.input_stream.symbol()
+                if symbol == ')':
+                    break
+                if symbol == ',':
+                    self.process(',')
+            else:
+                self.compile_expression()
+        self.tab_number -= 1
+        self.write('</expressionList>')
