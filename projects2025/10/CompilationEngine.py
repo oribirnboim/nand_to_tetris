@@ -294,9 +294,9 @@ class CompilationEngine:
         self.compile_term()
         while self.input_stream.token_type()=='SYMBOL' and (self.input_stream.symbol() in ops):
             op = self.input_stream.symbol()
-            if op == '<': op = '&lt'
-            if op == '>': op = '&gt'
-            if op == '&': op = '&amp'
+            if op == '<': op = '&lt;'
+            if op == '>': op = '&gt;'
+            if op == '&': op = '&amp;'
             self.write('<symbol> ' + op + ' </symbol>')
             self.input_stream.advance()
             self.compile_term()

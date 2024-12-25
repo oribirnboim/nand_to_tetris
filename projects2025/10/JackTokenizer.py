@@ -243,7 +243,30 @@ class JackTokenizer:
         return tokens
     
     def tokens_from_word(self, word: str):
-        if word[0].isdigit(): return [word]
+        by_strings = self.split_by_strings(word)
+        by_symbols = []
+        for word in by_strings: by_symbols += self.split_by_symbols(word)
+        return by_symbols
+
+    def split_by_strings(self, word):
+        string_indices = []
+        res = []
+        for i in range(len(word)):
+            if word[i] == '"': string_indices.append(i)
+        if len(string_indices) == 0: return [word]
+        start = 0
+        for i in range(int(len(string_indices)/2)):
+            end = string_indices[2*i]
+            res.append(word[start:end])
+            start = string_indices[2*i+1]+1
+            res.append(word[end:start])
+        if string_indices[-1] < len(word) - 1:
+            res.append(word[start:])
+        return res
+    
+    def split_by_symbols(self, word):
+        if not word: return []
+        if word[0]=='"': return [word]
         res = []
         symbol_indices = []
         for i in range(len(word)):
@@ -265,7 +288,7 @@ class JackTokenizer:
                 if on: continue
                 return [input[:i]] + self.split_except_strings(input[i+1:])
         return []
-    
+
     def get_value(self) -> str:
         return self.current
 
@@ -274,9 +297,9 @@ class JackTokenizer:
         while(self.has_more_tokens()):
             if self.token_type() == 'SYMBOL':
                 symbol = self.symbol()
-                if symbol == '<': symbol = '&lt'
-                if symbol == '>': symbol = '&gt'
-                if symbol == '&': symbol = '&amp'
+                if symbol == '<': symbol = '&lt;'
+                if symbol == '>': symbol = '&gt;'
+                if symbol == '&': symbol = '&amp;'
                 output_stream.write('<symbol> ' + symbol + ' </symbol>\n')
             if self.token_type() == 'IDENTIFIER':
                 output_stream.write('<identifier> ' + self.identifier() + ' </identifier>\n')
@@ -289,9 +312,9 @@ class JackTokenizer:
             self.advance()
         if self.token_type() == 'SYMBOL':
             symbol = self.symbol()
-            if symbol == '<': symbol = '&lt'
-            if symbol == '>': symbol = '&gt'
-            if symbol == '&': symbol = '&amp'
+            if symbol == '<': symbol = '&lt;'
+            if symbol == '>': symbol = '&gt;'
+            if symbol == '&': symbol = '&amp;'
             output_stream.write('<symbol> ' + symbol + ' </symbol>\n')
         if self.token_type() == 'IDENTIFIER':
             output_stream.write('<identifier> ' + self.identifier() + ' </identifier>\n')
@@ -305,7 +328,7 @@ class JackTokenizer:
 
 
 if __name__ == "__main__":
-    argument_path = 'Square\Square.jack'
+    argument_path = 'ExpressionLessSquare\SquareGame.jack'
     if os.path.isdir(argument_path):
         files_to_assemble = [
             os.path.join(argument_path, filename)
