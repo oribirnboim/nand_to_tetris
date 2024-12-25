@@ -43,10 +43,11 @@ class Game{
         if (key = 130) { do snake.setDirection(2);}   // left arrow
         if (key = 132) { do snake.setDirection(1);}   // right arrow
         
+        do apples.step();
         let moveRes = snake.move();
         if (moveRes = -1) {let exit = true;}
 
-        do apples.step();
+
      } // while
      return;
   }

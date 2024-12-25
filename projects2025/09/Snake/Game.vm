@@ -103,6 +103,9 @@ push constant 1
 call Snake.setDirection 2
 pop temp 0
 label IF_FALSE4
+push this 3
+call Apples.step 1
+pop temp 0
 push this 2
 call Snake.move 1
 pop local 2
@@ -117,9 +120,6 @@ push constant 0
 not
 pop local 1
 label IF_FALSE5
-push this 3
-call Apples.step 1
-pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
 push constant 0
