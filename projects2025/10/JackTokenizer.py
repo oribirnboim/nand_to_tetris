@@ -6,7 +6,11 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 import typing
+import re
 
+
+symbols = {'{', '}', '(', ')', '[', ']', '.', ',', ';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~', '^', '#'}
+keywords = { 'class', 'constructor', 'function', 'method', 'field', 'static', 'var', 'int', 'char', 'boolean', 'void', 'true', 'false', 'null', 'this', 'let', 'do', 'if', 'else', 'while', 'return'}
 
 class JackTokenizer:
     """Removes all comments from the input stream and breaks it
@@ -101,7 +105,11 @@ class JackTokenizer:
         # Your code goes here!
         # A good place to start is to read all the lines of the input:
         # input_lines = input_stream.read().splitlines()
-        pass
+        input = input_stream.read()
+        input = self.clean_comments(input)
+        self.tokens = self.create_token_list(input)
+        self.index = 0
+        self.current = self.tokens[0]
 
     def has_more_tokens(self) -> bool:
         """Do we have more tokens in the input?
@@ -110,7 +118,7 @@ class JackTokenizer:
             bool: True if there are more tokens, False otherwise.
         """
         # Your code goes here!
-        pass
+        return self.index < len(self.tokens) - 1
 
     def advance(self) -> None:
         """Gets the next token from the input and makes it the current token. 
@@ -118,7 +126,8 @@ class JackTokenizer:
         Initially there is no current token.
         """
         # Your code goes here!
-        pass
+        self.index += 1
+        self.current = self.tokens[self.index]
 
     def token_type(self) -> str:
         """
@@ -126,9 +135,17 @@ class JackTokenizer:
             str: the type of the current token, can be
             "KEYWORD", "SYMBOL", "IDENTIFIER", "INT_CONST", "STRING_CONST"
         """
-        # Your code goes here!
-        pass
-
+        token = self.current
+        if token[0] == '"':
+            return 'STRING_CONST'
+        if token[0].isdigit():
+            return "INT_CONST"
+        if token in symbols:
+            return "SYMBOL"
+        if token in keywords:
+            return "KEYWORD"
+        return "IDENTIFIER"
+        
     def keyword(self) -> str:
         """
         Returns:
@@ -139,7 +156,7 @@ class JackTokenizer:
             "IF", "ELSE", "WHILE", "RETURN", "TRUE", "FALSE", "NULL", "THIS"
         """
         # Your code goes here!
-        pass
+        return self.current.upper()
 
     def symbol(self) -> str:
         """
@@ -151,7 +168,7 @@ class JackTokenizer:
               '-' | '*' | '/' | '&' | '|' | '<' | '>' | '=' | '~' | '^' | '#'
         """
         # Your code goes here!
-        pass
+        return self.current     
 
     def identifier(self) -> str:
         """
@@ -164,7 +181,7 @@ class JackTokenizer:
                   identifiers, so 'self' cannot be an identifier, etc'.
         """
         # Your code goes here!
-        pass
+        return self.current
 
     def int_val(self) -> int:
         """
@@ -175,7 +192,7 @@ class JackTokenizer:
             integerConstant: A decimal number in the range 0-32767.
         """
         # Your code goes here!
-        pass
+        return int(self.current)
 
     def string_val(self) -> str:
         """
@@ -187,4 +204,64 @@ class JackTokenizer:
                       double quote or newline '"'
         """
         # Your code goes here!
-        pass
+        return self.current[1:-1]
+
+    def clean_comments(self, input: str) -> str:
+        comment_blocks = []
+        state = 'no_comment'
+        for i in range(len(input)-1):
+            current = input[i: i+2]
+            if state == 'no_comment':
+                if current == '/*':
+                    comment_begin = i
+                    state = 'multi_line'
+                if current == '//':
+                    comment_begin = i
+                    state = 'single_line'
+                continue
+            if state == 'multi_line':
+                if current == '*/':
+                    comment_blocks.append((comment_begin, i+2))
+                    state = 'no_comment'
+                continue
+            if state == 'single_line':
+                if current[0] == '\n':
+                    comment_blocks.append((comment_begin, i+1))
+                    state = 'no_comment'
+        if state != 'no_comment':
+            comment_blocks.append((comment_begin, len(input)))
+        for block in comment_blocks[::-1]:
+            input = input[:block[0]] + ' ' + input[block[1]:]
+        return input
+    
+    def create_token_list(self, input):
+        tokens = []
+        words = self.split_except_strings(input)
+        words = list(filter(None, words))
+        for w in words:
+            tokens.extend(self.tokens_from_word(w))
+        return tokens
+    
+    def tokens_from_word(self, word: str):
+        if word[0].isdigit(): return [word]
+        res = []
+        symbol_indices = []
+        for i in range(len(word)):
+            if word[i] in symbols: symbol_indices.append(i)
+        start_index = 0
+        for s in symbol_indices:
+            res.append(word[start_index:s])
+            res.append(word[s:s+1])
+            start_index = s+1
+        res.append(word[start_index:])
+        return list(filter(lambda s: s != "", res))
+
+    def split_except_strings(self, input):
+        on = False
+        for i in range(len(input)):
+            c = input[i]
+            if c == '"': on = not on
+            if c.isspace():
+                if on: continue
+                return [input[:i]] + self.split_except_strings(input[i+1:])
+        return []
