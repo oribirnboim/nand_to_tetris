@@ -324,11 +324,11 @@ class JackTokenizer:
             output_stream.write('<integerConstant> ' + str(self.int_val()) + ' </integerConstant>\n')
         if self.token_type() == 'KEYWORD':
             output_stream.write('<keyword> ' + self.keyword().lower() + ' </keyword>\n')
-        output_stream.write('</tokens>')
+        output_stream.write('</tokens>\n')
 
 
 if __name__ == "__main__":
-    argument_path = 'ExpressionLessSquare\SquareGame.jack'
+    argument_path = 'Square\Square.jack'
     if os.path.isdir(argument_path):
         files_to_assemble = [
             os.path.join(argument_path, filename)
