@@ -45,7 +45,7 @@ class CompilationEngine:
         self.output_stream.advance()
 
         while self.output_stream.tokentype() == "KEYWORD":
-            token_value = self.output_stream.keyword()
+            token_value = self.input_stream.keyword()
             if token_value in {"field","static"}:
                 self.compile_class_var_dec()
             elif token_value in {"method", "constructor"}:
@@ -59,7 +59,7 @@ class CompilationEngine:
         self.write("</class>")     
         self.input_stream.advance()   
         
-    def process(self, token: str):
+    def process(self, token: str) -> None:
         type = self.input_stream.token_type()
         if type == "KEYWORD":
             current = self.input_stream.keyword()
@@ -75,16 +75,35 @@ class CompilationEngine:
         self.write("<classVarDec>")
         self.recurtion_depth += 1
 
-        dec_type = self.output_stream.keyword()
+        # handles (static|field) section
+        dec_type = self.input_stream.keyword()
         self.process(dec_type)
 
-        var_kind = self.output_stream.token_type()
+        # handles type
+        var_kind = self.input_stream.token_type()
         if var_kind == "KEYWORD":
-            var_type = self.output_stream.keyword()
-            self.process
-            
-
+            var_type = self.input_stream.keyword()
+            self.process(var_type)
+        elif var_kind == "IDENTIFIER":
+            var_type = self.input_stream.identifier()
+            self.process(var_type)
         
+        # handles the first varName
+        varName = self.input_stream.identifier()
+        self.process(varName)
+
+        # handles possible other varNames
+        symbol_value = self.output_stream.symbol()
+        while symbol_value == ",":
+            self.input_stream.advance()
+            varName = self.input_stream.identifier()
+            self.process(varName)
+            symbol_value = self.input_stream.symbol()
+        
+        self.process(";")
+
+        self.recurtion_depth -= 1
+        self.write("</classVarDec>")
 
     def compile_subroutine(self) -> None:
         """
@@ -92,20 +111,93 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
-        # Your code goes here!
-        pass
+        self.write("<subroutineDec>")
+        self.recurtion_depth += 1
+        
+        subroutine_type = self.input_stream.keyword()
+        self.process(subroutine_type)
+        
+        subroutine_output_type = self.input_stream.token_type()
+        if subroutine_output_type == "KEYWORD":
+            subroutine_output_kind = self.input_stream.keyword()
+        else:
+            subroutine_output_kind = self.input_stream.identifier()
+        self.process(subroutine_output_kind)
+
+        subroutine_name = self.input_stream.identifier()
+        self.process(subroutine_name)
+
+        self.process("(")
+        
+        self.compile_parameter_list()
+
+        self.process(")")
+        
+        self.process("{")
+
+        self.compile_var_dec()
+
+        self.compile_statements()
+
+        self.process("}")
+    
+        self.recurtion_depth -= 1
+        self.write("</subroutineDec>")
 
     def compile_parameter_list(self) -> None:
         """Compiles a (possibly empty) parameter list, not including the 
         enclosing "()".
         """
-        # Your code goes here!
-        pass
+        def handle_type() -> None:
+
+
+        handle_type()
+        handle_varName()
+
+        symbol = self.output_stream.symbol()
+        while symbol == ",":
+            self.process(symbol)
+            handle_type()
+            handle_varName()
+            symbol = self.output_stream.symbol()
+
+        self.process(")")
+
+        self.recurtion_depth -= 1
+        self.write("</parameterList>")
 
     def compile_var_dec(self) -> None:
         """Compiles a var declaration."""
-        # Your code goes here!
-        pass
+        self.write("<varDec>")
+        self.recurtion_depth += 1
+        
+        def handle_type() -> None:
+            var_type = self.input_stream.token_type()
+            if var_type == "KEYWORD":
+                var_kind = self.input_stream.keyword()
+            else:
+                var_kind = self.input_stream.identifier()
+            self.process(var_kind)
+
+        def handle_varName() -> None:
+            varname = self.input_stream.identifier()
+            self.process(varname)
+
+        self.write("<parameterList>")
+        self.recurtion_depth += 1
+
+        self.process("var")
+
+        handle_type()
+
+        handle_varName()
+
+        while symbol == ",":
+            self.process(symbol)
+            handle_varName()
+            symbol = self.output_stream.symbol()
+
+        self.process("}")            
 
     def compile_statements(self) -> None:
         """Compiles a sequence of statements, not including the enclosing 
@@ -225,9 +317,6 @@ class CompilationEngine:
         
         self.recurtion_depth += 1
         self.write('</term>')
-
-        
-            
 
     def compile_expression_list(self) -> None:
         """Compiles a (possibly empty) comma-separated list of expressions."""
