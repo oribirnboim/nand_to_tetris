@@ -1159,9 +1159,12 @@ pop temp 0
 push this 0
 push constant 8
 add
+push constant 1
+sub
 push this 1
 push constant 9
 add
+<<<<<<< HEAD
 call Screen.drawPixel 2
 pop temp 0
 push this 0
@@ -1435,6 +1438,11 @@ push this 1
 push constant 12
 add
 call Screen.drawPixel 2
+=======
+push constant 1
+sub
+call Screen.drawRectangle 4
+>>>>>>> e01ab8f8c4532a1b0a3f8674173a28b39881caad
 pop temp 0
 push constant 0
 return

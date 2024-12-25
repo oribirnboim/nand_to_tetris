@@ -92,6 +92,7 @@ class Square{
     method void drawSnake(){
     do clearSquare();
       do Screen.setColor(true);
+<<<<<<< HEAD
 do Screen.drawPixel(x + 3, y + 2);
 do Screen.drawPixel(x + 4, y + 2);
 do Screen.drawPixel(x + 5, y + 2);
@@ -215,12 +216,19 @@ do Screen.drawPixel(x + 10, y + 12);
 do Screen.drawPixel(x + 11, y + 12);
 
 
+=======
+      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
+>>>>>>> e01ab8f8c4532a1b0a3f8674173a28b39881caad
       return;
     }
 
     method void clearSquare(){      
       do Screen.setColor(false);
+<<<<<<< HEAD
       do Screen.drawRectangle(x, y, x + squareSize - 1, y + squareSize - 1);
+=======
+      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
+>>>>>>> e01ab8f8c4532a1b0a3f8674173a28b39881caad
       return;
     }
 

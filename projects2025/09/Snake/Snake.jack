@@ -66,6 +66,7 @@ class Snake{
     let head = List.new(square, head);
     if (type = 1) {
       let length = length+1;
+      do board.writeScore(length);
       return 1;
     }
     let current = head;
