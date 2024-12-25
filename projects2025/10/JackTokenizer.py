@@ -6,7 +6,7 @@ as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
 Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
 """
 import typing
-import re
+import os
 
 
 symbols = {'{', '}', '(', ')', '[', ']', '.', ',', ';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~', '^', '#'}
@@ -268,3 +268,56 @@ class JackTokenizer:
     
     def get_value(self) -> str:
         return self.current
+
+    def write_tokens(self, output_stream) -> None:
+        output_stream.write('<tokens>\n')
+        while(self.has_more_tokens()):
+            if self.token_type() == 'SYMBOL':
+                symbol = self.symbol()
+                if symbol == '<': symbol = '&lt'
+                if symbol == '>': symbol = '&gt'
+                if symbol == '&': symbol = '&amp'
+                output_stream.write('<symbol> ' + symbol + ' </symbol>\n')
+            if self.token_type() == 'IDENTIFIER':
+                output_stream.write('<identifier> ' + self.identifier() + ' </identifier>\n')
+            if self.token_type() == 'STRING_CONST':
+                output_stream.write('<stringConstant> ' + self.string_val() + ' </stringConstant>\n')
+            if self.token_type() == 'INT_CONST':
+                output_stream.write('<integerConstant> ' + str(self.int_val()) + ' </integerConstant>\n')
+            if self.token_type() == 'KEYWORD':
+                output_stream.write('<keyword> ' + self.keyword().lower() + ' </keyword>\n')
+            self.advance()
+        if self.token_type() == 'SYMBOL':
+            symbol = self.symbol()
+            if symbol == '<': symbol = '&lt'
+            if symbol == '>': symbol = '&gt'
+            if symbol == '&': symbol = '&amp'
+            output_stream.write('<symbol> ' + symbol + ' </symbol>\n')
+        if self.token_type() == 'IDENTIFIER':
+            output_stream.write('<identifier> ' + self.identifier() + ' </identifier>\n')
+        if self.token_type() == 'STRING_CONST':
+            output_stream.write('<stringConstant> ' + self.string_val() + ' </stringConstant>\n')
+        if self.token_type() == 'INT_CONST':
+            output_stream.write('<integerConstant> ' + str(self.int_val()) + ' </integerConstant>\n')
+        if self.token_type() == 'KEYWORD':
+            output_stream.write('<keyword> ' + self.keyword().lower() + ' </keyword>\n')
+        output_stream.write('</tokens>')
+
+
+if __name__ == "__main__":
+    argument_path = 'Square\Square.jack'
+    if os.path.isdir(argument_path):
+        files_to_assemble = [
+            os.path.join(argument_path, filename)
+            for filename in os.listdir(argument_path)]
+    else:
+        files_to_assemble = [argument_path]
+    for input_path in files_to_assemble:
+        filename, extension = os.path.splitext(input_path)
+        if extension.lower() != ".jack":
+            continue
+        output_path = 'tokens.xml'
+        with open(input_path, 'r') as input_file, \
+                open(output_path, 'w') as output_file:
+            j = JackTokenizer(input_stream=input_file)
+            j.write_tokens(output_file)
