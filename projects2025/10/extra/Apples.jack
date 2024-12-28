@@ -1,0 +1,131 @@
+
+
+class Apples{
+  field Array apples;
+  field Board board;
+  field int numApples;
+  field int random;
+
+  constructor Apples new(Board b){
+    var int loopCounter;
+    let board = b;
+    let numApples = 3;
+    let apples = Array.new(numApples);
+    while (loopCounter < numApples){
+      let apples[loopCounter] = null;
+      let loopCounter = loopCounter+1;
+    }
+    return this;
+  }
+
+  method void step(){
+    var int appleCounter;
+    do stepApples();
+    let appleCounter = countApples();
+    if (appleCounter < numApples){
+      do addApple();
+    }
+    do generateRandom();
+    return;
+  }
+
+  method square findSquare(){
+    var int i;
+    var int j;
+    var int numSquares;
+    var Square square;
+    let i = 0;
+    let numSquares = board.getNumSquares();
+    while (i < numSquares){
+      let j = 0;
+      while (j < numSquares){
+        let square = board.getSquare(i, j);
+        if (square.getType() = 2){
+          return square;
+        }
+        let j = j+1;
+      }
+      let i = i+1;
+    }
+    return board.getSquare(0, 0);
+  }
+
+  method void generateRandom(){
+    var Square square;
+    var int i;
+    var int j;
+    var int m;
+    let m = board.getNumSquares();
+    let m = m*m;
+    let square = findSquare();
+    let i = square.getI();
+    let j = square.getJ();
+    let random = (random*i) + j;
+    while (random > (m-1)){
+      let random = random - m;
+    }
+    return;
+  }
+
+  method void addApple(){
+    var int i;
+    var int j;
+    var int numSquares;
+    var Square square;
+    var Apple apple;
+    var int loopCounter;
+    let numSquares = board.getNumSquares();
+    let i = random/numSquares;
+    let j = random - (numSquares*i);
+    let square = board.getSquare(i, j);
+    if (square.getType() = 2){
+      return;
+    }
+    let apple = Apple.new(square);
+    let loopCounter = 0;
+    while (loopCounter < numApples){
+      if (apples[loopCounter] = null){
+        let apples[loopCounter] = apple;
+        let loopCounter = numApples;
+      }
+      let loopCounter = loopCounter+1;
+    }
+    return;
+  }
+
+  method void stepApples(){
+    var int loopCounter;
+    var Apple current;
+    let loopCounter = 0;
+    while (loopCounter < numApples){
+      let current = apples[loopCounter];
+      if (~(current = null)){
+        do current.step();
+      }
+      let loopCounter = loopCounter + 1;
+    }
+    return;
+  }
+
+  method int countApples(){
+    var int appleCounter;
+    var int loopCounter;
+    var Apple current;
+    let loopCounter = 0;
+    let appleCounter = 0;
+    while (loopCounter < numApples){
+      let current = apples[loopCounter];
+      if (~(current = null)){
+        if (current.isThere()){
+          let appleCounter = appleCounter + 1;
+        }
+        else {
+          do current.dispose();
+          let apples[loopCounter] = null;
+        }
+      }
+      let loopCounter = loopCounter+1;
+    }
+    return appleCounter;
+  }
+}

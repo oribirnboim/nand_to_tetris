@@ -27,7 +27,7 @@ class CompilationEngine:
 
     def write(self, string: str) -> None:
         self.output_stream.write(("  " * self.tab_number) + string + "\n")
-        print(("  " * self.tab_number) + string)
+        # print(("  " * self.tab_number) + string)
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")

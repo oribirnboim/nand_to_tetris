@@ -1,0 +1,54 @@
+
+class Game{
+  field Board board;
+  field boolean playing;
+  field Snake snake;
+  field Apples apples;
+  field int frameTime;
+  field int numSamples;
+
+  constructor Game new(){
+      let board = Board.new();
+      let frameTime = 200;
+      let numSamples = 10;
+      let snake = Snake.new(board);
+      let apples = Apples.new(board);
+      return this;
+  }
+
+  method void play(){
+      var char key;  // the key currently pressed by the user
+      var boolean exit;
+      var int moveRes;
+      var int senseTime;
+      var int sampleCounter;
+      var int isMoveLegal;
+      var int direction;
+
+      let exit = false;
+      let senseTime = frameTime/numSamples;
+      //do board.printBoard();
+
+      
+      while (~exit) {
+        let sampleCounter = 0;
+        while (sampleCounter < numSamples){
+          let key = Keyboard.keyPressed();
+          let sampleCounter = sampleCounter + 1;
+          do Sys.wait(senseTime);
+        }
+        if (key = 81)  { let exit = true; }     // q key
+        if (key = 131) { do snake.setDirection(4);}   // up arrow
+        if (key = 133) { do snake.setDirection(3);}   // down arrow
+        if (key = 130) { do snake.setDirection(2);}   // left arrow
+        if (key = 132) { do snake.setDirection(1);}   // right arrow
+        
+        do apples.step();
+        let moveRes = snake.move();
+        if (moveRes = -1) {let exit = true;}
+
+
+     } // while
+     return;
+  }
+}

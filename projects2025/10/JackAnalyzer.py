@@ -39,7 +39,7 @@ if "__main__" == __name__:
     if not len(sys.argv) == 2:
         sys.exit("Invalid usage, please use: JackAnalyzer <input path>")
     argument_path = os.path.abspath(sys.argv[1])
-    # argument_path = 'ArrayTest\Main.jack'
+    # argument_path = "Game1\Opening.jack"
     if os.path.isdir(argument_path):
         files_to_assemble = [
             os.path.join(argument_path, filename)
