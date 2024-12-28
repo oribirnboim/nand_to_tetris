@@ -94,7 +94,7 @@ if "__main__" == __name__:
         files_to_assemble = [argument_path]
     for input_path in files_to_assemble:
         filename, extension = os.path.splitext(input_path)
-        print(filename)
+        # print(filename)
         if extension.lower() != ".asm":
             continue
         output_path = filename + ".hack"

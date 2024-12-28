@@ -29,7 +29,7 @@ class Parser:
         for line in input_lines:
             comment_index = line.find("//")
             if comment_index >= 0: line = line[0:comment_index]
-            line = line.strip()
+            line = ''.join(char for char in line if not char.isspace())
             if line != "": self.commands.append(line)
         self.current_line = 0
 
