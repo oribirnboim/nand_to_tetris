@@ -79,7 +79,7 @@ class CodeWriter:
             if command == 'sub': self.write('M=M-D //sub')
             if command == 'and': self.write('M=D&M //and')
             if command == 'or': self.write('M=D|M //or')
-        if command in {'neg', 'not'}:
+        if command in {'neg', 'not', 'shiftright', 'shiftleft'}:
             self.write('@SP //neg group')
             self.write('A=M-1')
             if command == 'neg': self.write('M=-M')

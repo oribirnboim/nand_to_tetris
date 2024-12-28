@@ -1,0 +1,4 @@
+push constant 70
+shiftright
+shiftleft
+pop local 0
