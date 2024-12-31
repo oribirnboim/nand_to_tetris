@@ -37,7 +37,7 @@ class CompilationEngine:
         self.write_identifier(var_name)
         self.input_stream.advance()
 
-    def handle_type():
+    def handle_type() -> None:
         var_type = self.input_stream.token_type()
         if var_type == "KEYWORD":
             var_kind = self.input_stream.keyword()

@@ -4,9 +4,9 @@ call Memory.alloc 1
 pop pointer 0
 call Board.new 0
 pop this 0
-push constant 200
+push constant 110
 pop this 4
-push constant 10
+push constant 30
 pop this 5
 push this 0
 call Snake.new 1
@@ -32,6 +32,8 @@ not
 if-goto WHILE_END0
 push constant 0
 pop local 4
+call Keyboard.keyPressed 0
+pop local 0
 label WHILE_EXP1
 push local 4
 push this 5
