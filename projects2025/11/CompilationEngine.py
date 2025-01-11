@@ -9,15 +9,14 @@ import typing
 
 
 class CompilationEngine:
-    """Gets input from a JackTokenizer and emits its parsed structure into an
+    """Gets token from a JackTokenizer and emits its parsed structure into an
     output stream.
     """
-
     def __init__(self, token_stream, writer, table) -> None:
         """
-        Creates a new compilation engine with the given input and output. The
+        Creates a new compilation engine with the given token and output. The
         next routine called must be compileClass()
-        :param input_stream: The input stream.
+        :param token_stream: The token stream.
         :param output_stream: The output stream.
         """
         self.token_stream = token_stream 
@@ -33,7 +32,7 @@ class CompilationEngine:
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
-        self.input_stream.advance()
+        self.token_stream.advance()
 
     def handle_varName(self) -> None:
         """
@@ -44,32 +43,28 @@ class CompilationEngine:
         var_index = self.table.index_of(var_name)
         self.writer.write_push(var_kind,var_index)
 
-
     def handle_type(self) -> None:
-        var_type = self.input_stream.token_type()
+        var_type = self.token_stream.token_type()
         if var_type == "KEYWORD":
-            var_kind = self.input_stream.keyword().lower()
+            var_kind = self.token_stream.keyword().lower()
             self.process(var_kind)
         else:
-            var_kind = self.input_stream.identifier()
+            var_kind = self.token_stream.identifier()
             self.write_identifier(var_kind)
 
     def compile_class(self) -> None:
         """Compiles a complete class."""
 
-        self.write("<class>")
-        self.tab_number += 1
-        
         self.process("class")
 
-        class_name = self.input_stream.identifier() 
+        class_name = self.token_stream.identifier() 
         self.class_name = class_name
         self.write_identifier(class_name)
 
         self.process("{")
 
-        while self.input_stream.token_type() == "KEYWORD":
-            token_value = self.input_stream.keyword().lower()
+        while self.token_stream.token_type() == "KEYWORD":
+            token_value = self.token_stream.keyword().lower()
             if token_value in {"field","static"}:
                 self.compile_class_var_dec()
             elif token_value in {"method", "constructor","function"}:
@@ -77,45 +72,35 @@ class CompilationEngine:
             else:
                 print("syntax error - class function that isnt varDec or subroutine.")
                 print('got: ' + token_value)
-        self.process("}")
-
-        self.tab_number -= 1
-        self.write("</class>")     
+        self.process("}")     
 
     def process(self, token: str) -> None:
-        type = self.input_stream.token_type()
+        type = self.token_stream.token_type()
         if type == "KEYWORD":
-            current = self.input_stream.keyword().lower()
+            current = self.token_stream.keyword().lower()
         elif type == "SYMBOL":
-            current = self.input_stream.symbol()
+            current = self.token_stream.symbol()
         if current != token: print('expected ' + token + ' got '+ current)
-        if self.input_stream.has_more_tokens(): self.input_stream.advance()
+        if self.token_stream.has_more_tokens(): self.token_stream.advance()
 
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
-        self.write("<classVarDec>")
-        self.tab_number += 1
-
+        
         # handles (static|field) section
-        dec_type = self.input_stream.keyword().lower()
-        self.process(dec_type)
+        var_kind = self.token_stream.keyword().lower()
+        var_type = self.token_stream.keyword().lower()
+        var_name = self.token_stream.identifier()
 
-        self.handle_type()
-
-        # handles the first varName
-        self.handle_varName()
+        self.table.define(var_name,var_type,var_kind.upper())
 
         # handles possible other varNames
-        symbol_value = self.input_stream.symbol()
+        symbol_value = self.token_stream.symbol()
         while symbol_value != ";":
             self.process(",")
-            self.handle_varName()
-            symbol_value = self.input_stream.symbol()
-        
+            self.table.define(var_name,var_type,var_kind.upper())
+            self.token_stream.advance()
+            symbol_value = self.token_stream.symbol()
         self.process(";")
-
-        self.tab_number -= 1
-        self.write("</classVarDec>")
 
     def compile_subroutine(self) -> None:
         """
@@ -123,52 +108,40 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
-        self.write("<subroutineDec>")
-        self.tab_number += 1
-        
-        subroutine_type = self.input_stream.keyword().lower()
-        self.process(subroutine_type)
-        
-        token_type = self.input_stream.token_type()
-        if token_type == "KEYWORD":
-            subroutine_output_kind = self.input_stream.keyword().lower()
-            self.process(subroutine_output_kind)
-        else:
-            subroutine_output_kind = self.input_stream.identifier()
-            self.write_identifier(subroutine_output_kind)
+        self.token_stream.advance()
 
-        subroutine_name = self.input_stream.identifier()
+        self.token_stream.advance()
+
+        subroutine_name = self.token_stream.identifier()
+        self.token_stream.advance()
+
+        subroutine_name = self.token_stream.identifier()
         self.write_identifier(subroutine_name)
 
         self.process("(")
         self.compile_parameter_list()
         self.process(")")
 
-        self.write('<subroutineBody>')
-        self.tab_number += 1
         self.process("{")
-        while self.input_stream.token_type() == 'KEYWORD' and self.input_stream.keyword()=='VAR':
+        n_vars = 0
+        while self.token_stream.token_type() == 'KEYWORD' and self.token_stream.keyword()=='VAR':
             self.compile_var_dec()
+            n_vars += 1
+        self.writer.write_function(subroutine_name, n_vars)
         self.compile_statements()
         self.process("}")
-        self.tab_number -= 1
-        self.write('</subroutineBody>')
-
-        self.tab_number -= 1
-        self.write("</subroutineDec>")
 
     def compile_parameter_list(self) -> None:
         """Compiles a (possibly empty) parameter list, not including the 
         enclosing "()".
         """
-        self.write("<parameterList>")
-        self.tab_number += 1
-        while self.input_stream.token_type()!='SYMBOL' or self.input_stream.symbol()!=')':
-            if self.input_stream.token_type() == 'SYMBOL': self.process(',')
-            self.handle_type()
-            self.handle_varName()
-        self.tab_number -= 1
-        self.write("</parameterList>")
+        while self.token_stream.token_type()!='SYMBOL' or self.token_stream.symbol()!=')':
+            if self.token_stream.token_type() == 'SYMBOL': self.process(',')
+            var_type = self.token_stream.symbol()
+            self.token_stream.advance()
+            var_name = self.token_stream.identifier()
+            self.token_stream.advance()
+            self.table.define(var_name,var_type,"ARG")
 
     def compile_var_dec(self) -> int:
         """Compiles a var declaration."""
@@ -197,8 +170,12 @@ class CompilationEngine:
         """
         # Your code goes here!
         token_type = self.input_stream.token_type()
+        self.write("<statements>")
+        self.tab_number += 1
+
+        token_type = self.token_stream.token_type()
         while token_type == "KEYWORD":
-            statement_kind = self.input_stream.keyword().lower()
+            statement_kind = self.token_stream.keyword().lower()
             if statement_kind == "if":
                 self.compile_if()
             elif statement_kind == "while":
@@ -209,7 +186,7 @@ class CompilationEngine:
                 self.compile_do()
             elif statement_kind == "return":
                 self.compile_return()
-            token_type = self.input_stream.token_type()
+            token_type = self.token_stream.token_type()
 
 
     def compile_do(self) -> None:
@@ -372,11 +349,11 @@ class CompilationEngine:
             object_type = self.table.type_of(identifier)
             self.token_stream.advance()
             if self.token_stream.token_type() == "SYMBOL":
-                symbol = self.input_stream.symbol()
+                symbol = self.token_stream.symbol()
                 if symbol == '.':
                     self.process('.')
                     self.writer.write_push(segment, index)
-                    method_name = self.input_stream.identifier()
+                    method_name = self.token_stream.identifier()
                     self.token_stream.advance()
                     self.process('(')
                     n = self.compile_expression_list()
@@ -401,16 +378,14 @@ class CompilationEngine:
                     return
             self.writer.write_push(segment, index)
             
-
-
     def compile_expression_list(self) -> int:
         """Compiles a (possibly empty) comma-separated list of expressions."""
         # Your code goes here!
         res = 0
         while True:
-            if self.token_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==')':
+            if self.token_stream.token_type() == 'SYMBOL' and self.token_stream.symbol()==')':
                 break
-            if self.token_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==',':
+            if self.token_stream.token_type() == 'SYMBOL' and self.token_stream.symbol()==',':
                 self.process(',')
             else:
                 self.compile_expression()

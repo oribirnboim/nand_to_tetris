@@ -28,7 +28,6 @@ class SymbolTable:
         # Your code goes here!
         self.subroutine_table = []   
 
-
     def define(self, name: str, type: str, kind: str) -> None:
         """Defines a new identifier of a given name, type and kind and assigns 
         it a running index. "STATIC" and "FIELD" identifiers have a class scope, 
@@ -85,7 +84,6 @@ class SymbolTable:
             if var[0] == name:
                 return var[2] # var kind
         return None
-
 
     def type_of(self, name: str) -> str:
         """
