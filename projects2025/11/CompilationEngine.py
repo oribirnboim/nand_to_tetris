@@ -125,8 +125,8 @@ class CompilationEngine:
         self.process("{")
         n_vars = 0
         while self.token_stream.token_type() == 'KEYWORD' and self.token_stream.keyword()=='VAR':
-            self.compile_var_dec()
-            n_vars += 1
+            line_n_vars = self.compile_var_dec()
+            n_vars += line_n_vars
         self.writer.write_function(subroutine_name, n_vars)
         self.compile_statements()
         self.process("}")
