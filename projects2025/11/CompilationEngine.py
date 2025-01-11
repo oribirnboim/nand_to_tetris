@@ -143,25 +143,33 @@ class CompilationEngine:
             self.token_stream.advance()
             self.table.define(var_name,var_type,"ARG")
 
-    def compile_var_dec(self) -> None:
+    def compile_var_dec(self) -> int:
         """Compiles a var declaration."""
         self.process("var")
-        self.handle_type()
-        self.handle_varName()
-        symbol = self.token_stream.symbol()
+        type = self.token_stream.identifier() #is okay even if type is keyword
+        self.token_stream.advance()
+        var_name = self.token_stream.identifier()
+        self.table.define(var_name, type, 'VAR')
+        self.token_stream.advance()
+        symbol = self.input_stream.symbol()
+        counter = 1
         while symbol == ",":
             self.process(symbol)
-            self.handle_varName()
-            symbol = self.token_stream.symbol()
-        self.process(";")            
-        self.tab_number -= 1
-        self.write("</varDec>")
+            var_name = self.token_stream.identifier()
+            self.table.define(var_name, type, 'VAR')
+            self.token_stream.advance()
+            symbol = self.input_stream.symbol()
+            counter += 1
+        self.process(";")
+        return counter            
+
 
     def compile_statements(self) -> None:
         """Compiles a sequence of statements, not including the enclosing 
         "{}".
         """
         # Your code goes here!
+        token_type = self.input_stream.token_type()
         self.write("<statements>")
         self.tab_number += 1
 
@@ -179,9 +187,7 @@ class CompilationEngine:
             elif statement_kind == "return":
                 self.compile_return()
             token_type = self.token_stream.token_type()
-        
-        self.tab_number -= 1
-        self.write("</statements>")
+
 
     def compile_do(self) -> None:
         """Compiles a do statement."""
