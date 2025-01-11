@@ -23,6 +23,7 @@ class CompilationEngine:
         self.token_stream = token_stream 
         self.writer = writer
         self.table = table
+        self.class_name = ''
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
@@ -50,6 +51,7 @@ class CompilationEngine:
         self.process("class")
 
         class_name = self.input_stream.identifier() 
+        self.class_name = class_name
         self.write_identifier(class_name)
 
         self.process("{")
@@ -299,7 +301,12 @@ class CompilationEngine:
             self.writer.write_arithmetic(op)
 
     def compile_string(self) -> None:
-        pass
+        s = self.token_stream.string_val()
+        self.writer.write_push('constant', len(s))
+        self.writer.write_call('String.new', 1)
+        for c in s:
+            self.writer.write_push('constant', ord(c))
+            self.writer.write_call('String.appendChar', 2)
         self.token_stream.advance()
 
     def compile_term(self) -> None:
@@ -315,14 +322,14 @@ class CompilationEngine:
         # Your code goes here!
         keyword_constants = {'true', 'false', 'this', 'null'}
         unary_ops = {'-': 'neg', '~': 'not', '^': 'shiftright', '#': 'shiftleft'}
-        type = self.input_stream.token_type()
+        type = self.token_stream.token_type()
         if type == "INT_CONST":
-            self.writer.write_push('constant', self.input_stream.int_val())
-            self.input_stream.advance()
+            self.writer.write_push('constant', self.token_stream.int_val())
+            self.token_stream.advance()
         if type == "STRING_CONST":
             self.compile_string()
-        if type == "KEYWORD" and (self.input_stream.keyword().lower() in keyword_constants):
-            keyword_constant = self.input_stream.keyword()
+        if type == "KEYWORD" and (self.token_stream.keyword().lower() in keyword_constants):
+            keyword_constant = self.token_stream.keyword()
             if keyword_constant == 'TRUE':
                 self.writer.write_push('constant', 1)
                 self.writer.write_arithmetic('neg')
@@ -330,40 +337,58 @@ class CompilationEngine:
                 self.writer.write_push('constant', 0)
             else:
                 self.writer.write_push('pointer', 0)
-            self.input_stream.advance()
+            self.token_stream.advance()
         if type == "SYMBOL":
-            if self.input_stream.symbol() in unary_ops.keys():
-                self.input_stream.advance()
+            if self.token_stream.symbol() in unary_ops.keys():
+                op = self.token_stream.symbol()
+                self.token_stream.advance()
                 self.compile_term()
-                self.writer.write_arithmetic(unary_ops[self.input_stream.symbol()])
+                self.writer.write_arithmetic(unary_ops[op])
             else:
                 self.process('(')
                 self.compile_expression()
                 self.process(')')
         if type == "IDENTIFIER":
-            self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
-            self.input_stream.advance()
-            if self.input_stream.token_type() == "SYMBOL":
+            identifier = self.token_stream.identifier()
+            segment, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+            object_type = self.table.type_of(identifier)
+            self.token_stream.advance()
+            if self.token_stream.token_type() == "SYMBOL":
                 symbol = self.input_stream.symbol()
                 if symbol == '.':
                     self.process('.')
-                    self.write('<identifier> ' + self.input_stream.identifier() + ' </identifier>')
-                    self.input_stream.advance()
+                    self.writer.write_push(segment, index)
+                    method_name = self.input_stream.identifier()
+                    self.token_stream.advance()
                     self.process('(')
-                    self.compile_expression_list()
+                    n = self.compile_expression_list()
                     self.process(')')
+                    self.writer.write_call(object_type + '.' + method_name, n+1)
+                    return
                 if symbol == '[':
                     self.process('[')
+                    self.writer.write_push(segment, index)
                     self.compile_expression()
+                    self.writer.write_arithmetic('add')
+                    self.writer.write_pop('pointer', 1)
+                    self.writer.write_push('that', 0)
                     self.process(']')
+                    return
                 if symbol == '(':
+                    self.writer.write_push('pointer', 0)
                     self.process('(')
-                    self.compile_expression_list()
+                    n = self.compile_expression_list()
                     self.process(')')
+                    self.writer.write_call(self.class_name + '.' + identifier, n+1)
+                    return
+            self.writer.write_push(segment, index)
+            
 
-    def compile_expression_list(self) -> None:
+
+    def compile_expression_list(self) -> int:
         """Compiles a (possibly empty) comma-separated list of expressions."""
         # Your code goes here!
+        res = 0
         while True:
             if self.token_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==')':
                 break
@@ -371,4 +396,5 @@ class CompilationEngine:
                 self.process(',')
             else:
                 self.compile_expression()
-        self.tab_number -= 1
+                res += 1
+        return res
