@@ -37,7 +37,6 @@ class CompilationEngine:
         var_index = self.table.index_of(var_name)
         self.writer.write_push(var_kind,var_index)
 
-
     def handle_type(self) -> None:
         var_type = self.input_stream.token_type()
         if var_type == "KEYWORD":
@@ -65,10 +64,7 @@ class CompilationEngine:
             else:
                 print("syntax error - class function that isnt varDec or subroutine.")
                 print('got: ' + token_value)
-        self.process("}")
-
-        self.tab_number -= 1
-        self.write("</class>")     
+        self.process("}")     
 
     def process(self, token: str) -> None:
         type = self.input_stream.token_type()
@@ -81,17 +77,15 @@ class CompilationEngine:
 
     def compile_class_var_dec(self) -> None:
         """Compiles a static declaration or a field declaration."""
-        self.write("<classVarDec>")
-        self.tab_number += 1
-
+        
         # handles (static|field) section
-        dec_type = self.input_stream.keyword().lower()
-        self.process(dec_type)
+        dec_type = self.token_stream.keyword().lower()
+        var_type = self.token_stream.keyword().lower()
+        var_name = self.token_stream.identifier()
+        
+        
 
-        self.handle_type()
-
-        # handles the first varName
-        self.handle_varName()
+        self.table.define
 
         # handles possible other varNames
         symbol_value = self.input_stream.symbol()
