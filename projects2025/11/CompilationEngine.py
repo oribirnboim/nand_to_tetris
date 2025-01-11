@@ -22,7 +22,13 @@ class CompilationEngine:
         self.token_stream = token_stream 
         self.writer = writer
         self.table = table
+        self.label_counter = 0
         self.class_name = ''
+
+    def generate_label(self) -> str:
+        res = self.class_name + 'Label' + str(self.label_counter)
+        self.label_counter += 1
+        return res
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
@@ -180,88 +186,94 @@ class CompilationEngine:
     def compile_do(self) -> None:
         """Compiles a do statement."""
         # Your code goes here!
-        self.write('<doStatement>')
-        self.tab_number += 1
         self.process('do')
-        self.handle_varName()
-        s = self.token_stream.symbol()
-        while s == '.':
-            self.process('.')
-            self.handle_varName()
-            s = self.token_stream.symbol()
-        self.process('(')
-        self.compile_expression_list()
-        self.process(')')
+        self.compile_term()
+        self.writer.write_pop('temp', 0)
         self.process(';')
-        self.tab_number -= 1
-        self.write('</doStatement>')
+
 
     def compile_let(self) -> None:
         """Compiles a let statement."""
         # Your code goes here!
-        self.write('<letStatement>')
-        self.tab_number += 1
         self.process('let')
-        self.handle_varName()
-        s = self.token_stream.symbol()
+        array = False
+        identifier = self.token_stream.identifier()
+        segment, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+        self.token_stream.advance()
+        s = self.input_stream.symbol()
         if s=='[':
+            array = True
             self.process('[')
+            self.writer.write_push(segment, index)
             self.compile_expression()
+            self.writer.write_arithmetic('add')
             self.process(']')
         self.process('=')
         self.compile_expression()
+        if not array:
+            self.writer.write_pop(segment, index)
+        else:
+            self.writer.write_pop('temp', 0)
+            self.writer.write_pop('pointer', 1)
+            self.writer.write_push('temp', 0)
+            self.writer.write_pop('that', 0)
         self.process(';')
-        self.tab_number -= 1
-        self.write('</letStatement>')
+
 
     def compile_while(self) -> None:
         """Compiles a while statement."""
         # Your code goes here!
-        self.write('<whileStatement>')
-        self.tab_number += 1
+        start_while = self.generate_label()
+        end_while = self.generate_label()
         self.process('while')
         self.process('(')
+        self.writer.write_label(start_while)
         self.compile_expression()
+        self.writer.write_arithmetic('not')
+        self.writer.write_if(end_while)
         self.process(')')
         self.process('{')
         self.compile_statements()
+        self.writer.write_goto(start_while)
+        self.writer.write_label(end_while)
         self.process('}')
-        self.tab_number -= 1
-        self.write('</whileStatement>')
 
     def compile_return(self) -> None:
         """Compiles a return statement."""
         # Your code goes here!
-        self.write('<returnStatement>')
-        self.tab_number += 1
         self.process('return')
-        type = self.token_stream.token_type()
-        if not (type == "SYMBOL" and self.token_stream.symbol() == ';'):
+        type = self.input_stream.token_type()
+        if type == "SYMBOL" and self.input_stream.symbol() == ';':
+            self.writer.write_push('constant', 0)
+        else:
             self.compile_expression()
+        self.writer.write_return()
         self.process(';')
-        self.tab_number -= 1
-        self.write('</returnStatement>')
+
 
     def compile_if(self) -> None:
         """Compiles a if statement, possibly with a trailing else clause."""
         # Your code goes here!
-        self.write('<ifStatement>')
-        self.tab_number += 1
+        start_else = self.generate_label()
+        end_else = self.generate_label()
         self.process('if')
         self.process('(')
         self.compile_expression()
+        self.writer.write_arithmetic('not')
+        self.writer.write_if(start_else)
         self.process(')')
         self.process('{')
         self.compile_statements()
+        self.writer.write_goto(end_else)
         self.process('}')
-        if self.token_stream.token_type()=='KEYWORD':
-            if self.token_stream.keyword()=='ELSE':
+        self.writer.write_label(start_else)
+        if self.input_stream.token_type()=='KEYWORD':
+            if self.input_stream.keyword()=='ELSE':
                 self.process('else')
                 self.process('{')
                 self.compile_statements()
                 self.process('}')
-        self.tab_number -= 1
-        self.write('</ifStatement>')
+        self.writer.write_label(end_else)
 
     def compile_expression(self) -> None:
         """Compiles an expression."""
