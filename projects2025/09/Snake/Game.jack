@@ -9,8 +9,8 @@ class Game{
 
   constructor Game new(){
       let board = Board.new();
-      let frameTime = 200;
-      let numSamples = 10;
+      let frameTime = 110;
+      let numSamples = 30;
       let snake = Snake.new(board);
       let apples = Apples.new(board);
       return this;
@@ -32,6 +32,8 @@ class Game{
       
       while (~exit) {
         let sampleCounter = 0;
+        let key = Keyboard.keyPressed();
+
         while (sampleCounter < numSamples){
           let key = Keyboard.keyPressed();
           let sampleCounter = sampleCounter + 1;

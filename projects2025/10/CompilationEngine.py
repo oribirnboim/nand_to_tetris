@@ -73,7 +73,6 @@ class CompilationEngine:
         self.tab_number -= 1
         self.write("</class>")     
 
-
     def process(self, token: str) -> None:
         type = self.input_stream.token_type()
         if type == "KEYWORD":
