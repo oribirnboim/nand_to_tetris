@@ -13,21 +13,16 @@ class CompilationEngine:
     output stream.
     """
 
-    def __init__(self, input_stream, output_stream) -> None:
+    def __init__(self, token_stream, writer, table) -> None:
         """
         Creates a new compilation engine with the given input and output. The
         next routine called must be compileClass()
         :param input_stream: The input stream.
         :param output_stream: The output stream.
         """
-        self.input_stream = input_stream 
-        self.output_stream = output_stream
-                
-        self.tab_number = 0 # used to count the number of tabs
-
-    def write(self, string: str) -> None:
-        self.output_stream.write(("  " * self.tab_number) + string + "\n")
-        # print(("  " * self.tab_number) + string)
+        self.token_stream = token_stream 
+        self.writer = writer
+        self.table = table
 
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
@@ -77,10 +72,8 @@ class CompilationEngine:
         type = self.input_stream.token_type()
         if type == "KEYWORD":
             current = self.input_stream.keyword().lower()
-            self.write('<keyword> ' + current + ' </keyword>')
         elif type == "SYMBOL":
             current = self.input_stream.symbol()
-            self.write('<symbol> ' + current + ' </symbol>')
         if current != token: print('expected ' + token + ' got '+ current)
         if self.input_stream.has_more_tokens(): self.input_stream.advance()
 
@@ -294,20 +287,20 @@ class CompilationEngine:
     def compile_expression(self) -> None:
         """Compiles an expression."""
         # Your code goes here!
-        ops = {'+', '-', '*', '/', '&', '|', '<', '>', '='}
-        self.write('<expression>')
-        self.tab_number += 1
+        ops = {'+': 'add', '-': 'sub', '*': '*', '/': '/',
+               '&': 'and', '|': 'or', '<': 'lt', '>': 'gt', '=': 'eq'}
         self.compile_term()
-        while self.input_stream.token_type()=='SYMBOL' and (self.input_stream.symbol() in ops):
-            op = self.input_stream.symbol()
-            if op == '<': op = '&lt;'
-            if op == '>': op = '&gt;'
-            if op == '&': op = '&amp;'
-            self.write('<symbol> ' + op + ' </symbol>')
-            self.input_stream.advance()
+        while self.token_stream.token_type()=='SYMBOL' and (self.token_stream.symbol() in ops.keys()):
+            op = ops[self.token_stream.symbol()]
+            self.token_stream.advance()
             self.compile_term()
-        self.tab_number -= 1
-        self.write('</expression>')
+            if op == '*': self.writer.write_call('Math.multiply', 2)
+            if op == '/': self.writer.write_call('Math.divide', 2)
+            self.writer.write_arithmetic(op)
+
+    def compile_string(self) -> None:
+        pass
+        self.token_stream.advance()
 
     def compile_term(self) -> None:
         """Compiles a term. 
@@ -321,24 +314,28 @@ class CompilationEngine:
         """
         # Your code goes here!
         keyword_constants = {'true', 'false', 'this', 'null'}
-        unary_ops = {'-', '~', '^', '#'}
-        self.write('<term>')
-        self.tab_number += 1
+        unary_ops = {'-': 'neg', '~': 'not', '^': 'shiftright', '#': 'shiftleft'}
         type = self.input_stream.token_type()
         if type == "INT_CONST":
-            self.write('<integerConstant> ' + str(self.input_stream.int_val()) + ' </integerConstant>')
+            self.writer.write_push('constant', self.input_stream.int_val())
             self.input_stream.advance()
         if type == "STRING_CONST":
-            self.write('<stringConstant> ' + self.input_stream.string_val() + ' </stringConstant>')
-            self.input_stream.advance()
+            self.compile_string()
         if type == "KEYWORD" and (self.input_stream.keyword().lower() in keyword_constants):
-            self.write('<keyword> ' + self.input_stream.keyword().lower() + ' </keyword>')
+            keyword_constant = self.input_stream.keyword()
+            if keyword_constant == 'TRUE':
+                self.writer.write_push('constant', 1)
+                self.writer.write_arithmetic('neg')
+            elif keyword_constant in {'FALSE', 'NULL'}:
+                self.writer.write_push('constant', 0)
+            else:
+                self.writer.write_push('pointer', 0)
             self.input_stream.advance()
         if type == "SYMBOL":
-            if self.input_stream.symbol() in unary_ops:
-                self.write('<symbol> ' + self.input_stream.symbol() + ' </symbol>')
+            if self.input_stream.symbol() in unary_ops.keys():
                 self.input_stream.advance()
                 self.compile_term()
+                self.writer.write_arithmetic(unary_ops[self.input_stream.symbol()])
             else:
                 self.process('(')
                 self.compile_expression()
@@ -363,20 +360,15 @@ class CompilationEngine:
                     self.process('(')
                     self.compile_expression_list()
                     self.process(')')
-        self.tab_number -= 1
-        self.write('</term>')
 
     def compile_expression_list(self) -> None:
         """Compiles a (possibly empty) comma-separated list of expressions."""
         # Your code goes here!
-        self.write('<expressionList>')
-        self.tab_number += 1
         while True:
-            if self.input_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==')':
+            if self.token_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==')':
                 break
-            if self.input_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==',':
+            if self.token_stream.token_type() == 'SYMBOL' and self.input_stream.symbol()==',':
                 self.process(',')
             else:
                 self.compile_expression()
         self.tab_number -= 1
-        self.write('</expressionList>')

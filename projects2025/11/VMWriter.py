@@ -47,7 +47,7 @@ class VMWriter:
             index (int): the index to pop from.
         """
         # Your code goes here!
-        self.write('pop ' + self.segment_names[segment] + ' ' + str(index))
+        self.write('pop ' + segment + ' ' + str(index))
 
     def write_arithmetic(self, command: str) -> None:
         """Writes a VM arithmetic command.
@@ -57,7 +57,7 @@ class VMWriter:
             "EQ", "GT", "LT", "AND", "OR", "NOT", "SHIFTLEFT", "SHIFTRIGHT".
         """
         # Your code goes here!
-        self.write(command.lower())
+        self.write(command) # should be called with lowercase argument
 
     def write_label(self, label: str) -> None:
         """Writes a VM label command.
