@@ -36,7 +36,7 @@ class VMWriter:
             index (int): the index to push to.
         """
         # Your code goes here!
-        self.write('push ' + self.segment_names[segment] + ' ' + str(index))
+        self.write('push ' + segment + ' ' + str(index)) # should be called with lowercase argument
 
     def write_pop(self, segment: str, index: int) -> None:
         """Writes a VM pop command.
@@ -47,7 +47,7 @@ class VMWriter:
             index (int): the index to pop from.
         """
         # Your code goes here!
-        self.write('pop ' + segment + ' ' + str(index))
+        self.write('pop ' + segment + ' ' + str(index)) # should be called with lowercase argument
 
     def write_arithmetic(self, command: str) -> None:
         """Writes a VM arithmetic command.
