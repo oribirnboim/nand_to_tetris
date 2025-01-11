@@ -50,18 +50,14 @@ class CompilationEngine:
     def compile_class(self) -> None:
         """Compiles a complete class."""
 
-        self.write("<class>")
-        self.tab_number += 1
-        
         self.process("class")
 
-        class_name = self.input_stream.identifier() 
-        self.write_identifier(class_name)
+        class_name = self.token_stream.identifier() 
 
         self.process("{")
 
         while self.input_stream.token_type() == "KEYWORD":
-            token_value = self.input_stream.keyword().lower()
+            token_value = self.token_stream.keyword().lower()
             if token_value in {"field","static"}:
                 self.compile_class_var_dec()
             elif token_value in {"method", "constructor","function"}:
