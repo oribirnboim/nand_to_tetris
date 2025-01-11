@@ -30,8 +30,14 @@ class CompilationEngine:
         self.input_stream.advance()
 
     def handle_varName(self) -> None:
-        var_name = self.input_stream.identifier()
-        self.write_identifier(var_name)
+        """
+        handles the writing of a predeclared variable.
+        """
+        var_name = self.token_stream.identifier()
+        var_kind = self.table.kind_of(var_name)
+        var_index = self.table.index_of(var_name)
+        self.writer.write_push(var_kind,var_index)
+
 
     def handle_type(self) -> None:
         var_type = self.input_stream.token_type()
