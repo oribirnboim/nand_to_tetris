@@ -37,11 +37,7 @@ class CompilationEngine:
         var_name = self.input_stream.identifier()
         self.write_identifier(var_name)
 
-<<<<<<< HEAD
-    def handle_type() -> None:
-=======
     def handle_type(self) -> None:
->>>>>>> 939bbd543dbf8c875e7c7a31e2aace2ad7308f6a
         var_type = self.input_stream.token_type()
         if var_type == "KEYWORD":
             var_kind = self.input_stream.keyword().lower()
@@ -76,7 +72,6 @@ class CompilationEngine:
 
         self.tab_number -= 1
         self.write("</class>")     
-
 
     def process(self, token: str) -> None:
         type = self.input_stream.token_type()
