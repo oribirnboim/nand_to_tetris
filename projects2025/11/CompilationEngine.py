@@ -163,7 +163,6 @@ class CompilationEngine:
         self.process(";")
         return counter            
 
-
     def compile_statements(self) -> None:
         """Compiles a sequence of statements, not including the enclosing 
         "{}".
@@ -187,7 +186,6 @@ class CompilationEngine:
             elif statement_kind == "return":
                 self.compile_return()
             token_type = self.token_stream.token_type()
-
 
     def compile_do(self) -> None:
         """Compiles a do statement."""
