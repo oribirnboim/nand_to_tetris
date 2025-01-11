@@ -131,7 +131,7 @@ class CompilationEngine:
         self.compile_statements()
         self.process("}")
 
-    def compile_parameter_list(self) -> int:
+    def compile_parameter_list(self) -> None:
         """Compiles a (possibly empty) parameter list, not including the 
         enclosing "()".
         """
