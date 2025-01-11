@@ -151,14 +151,14 @@ class CompilationEngine:
         var_name = self.token_stream.identifier()
         self.table.define(var_name, type, 'VAR')
         self.token_stream.advance()
-        symbol = self.input_stream.symbol()
+        symbol = self.token_stream.symbol()
         counter = 1
         while symbol == ",":
             self.process(symbol)
             var_name = self.token_stream.identifier()
             self.table.define(var_name, type, 'VAR')
             self.token_stream.advance()
-            symbol = self.input_stream.symbol()
+            symbol = self.token_stream.symbol()
             counter += 1
         self.process(";")
         return counter            
@@ -168,7 +168,7 @@ class CompilationEngine:
         "{}".
         """
         # Your code goes here!
-        token_type = self.input_stream.token_type()
+        token_type = self.token_stream.token_type()
         self.write("<statements>")
         self.tab_number += 1
 
@@ -203,7 +203,7 @@ class CompilationEngine:
         identifier = self.token_stream.identifier()
         segment, index = self.table.kind_of(identifier), self.table.index_of(identifier)
         self.token_stream.advance()
-        s = self.input_stream.symbol()
+        s = self.token_stream.symbol()
         if s=='[':
             array = True
             self.process('[')
@@ -244,8 +244,8 @@ class CompilationEngine:
         """Compiles a return statement."""
         # Your code goes here!
         self.process('return')
-        type = self.input_stream.token_type()
-        if type == "SYMBOL" and self.input_stream.symbol() == ';':
+        type = self.token_stream.token_type()
+        if type == "SYMBOL" and self.token_stream.symbol() == ';':
             self.writer.write_push('constant', 0)
         else:
             self.compile_expression()
@@ -268,8 +268,8 @@ class CompilationEngine:
         self.writer.write_goto(end_else)
         self.process('}')
         self.writer.write_label(start_else)
-        if self.input_stream.token_type()=='KEYWORD':
-            if self.input_stream.keyword()=='ELSE':
+        if self.token_stream.token_type()=='KEYWORD':
+            if self.token_stream.keyword()=='ELSE':
                 self.process('else')
                 self.process('{')
                 self.compile_statements()
