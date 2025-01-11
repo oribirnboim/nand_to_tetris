@@ -191,7 +191,6 @@ class CompilationEngine:
         self.writer.write_pop('temp', 0)
         self.process(';')
 
-
     def compile_let(self) -> None:
         """Compiles a let statement."""
         # Your code goes here!
@@ -218,7 +217,6 @@ class CompilationEngine:
             self.writer.write_push('temp', 0)
             self.writer.write_pop('that', 0)
         self.process(';')
-
 
     def compile_while(self) -> None:
         """Compiles a while statement."""
@@ -249,7 +247,6 @@ class CompilationEngine:
             self.compile_expression()
         self.writer.write_return()
         self.process(';')
-
 
     def compile_if(self) -> None:
         """Compiles a if statement, possibly with a trailing else clause."""
