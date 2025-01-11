@@ -1,0 +1,113 @@
+class Square{
+  field int x;
+  field int y;
+  field int type;
+  field int i;
+  field int j;
+  field int squareSize;
+
+
+  constructor Square new(int x1, int y1, int i1, int j1, int type1, int size){
+    let x = x1;
+    let y = y1;
+    let i = i1;
+    let j = j1;
+    let squareSize = size;
+    do setType(type1);
+    return this;
+  }
+
+  method int getType(){
+    return type;
+  }
+
+  method int getI(){
+    return i;
+  }
+
+  method int getJ(){
+    return j;
+  }
+
+  method void drawApple (){
+      do Screen.setColor(true);
+
+      do Screen.drawPixel(x + 11, y + 4);
+      do Screen.drawPixel(x + 10, y + 5);
+      do Screen.drawPixel(x + 11, y + 5);
+      do Screen.drawPixel(x + 10, y + 6);
+      do Screen.drawPixel(x + 8, y + 7);
+      do Screen.drawPixel(x + 9, y + 7);
+      do Screen.drawPixel(x + 10, y + 7);
+      do Screen.drawPixel(x + 11, y + 7);
+      do Screen.drawPixel(x + 12, y + 7);
+      do Screen.drawPixel(x + 7, y + 8);
+      do Screen.drawPixel(x + 8, y + 8);
+      do Screen.drawPixel(x + 9, y + 8);
+      do Screen.drawPixel(x + 10, y + 8);
+      do Screen.drawPixel(x + 11, y + 8);
+      do Screen.drawPixel(x + 12, y + 8);
+      do Screen.drawPixel(x + 7, y + 9);
+      do Screen.drawPixel(x + 8, y + 9);
+      do Screen.drawPixel(x + 9, y + 9);
+      do Screen.drawPixel(x + 10, y + 9);
+      do Screen.drawPixel(x + 11, y + 9);
+      do Screen.drawPixel(x + 7, y + 10);
+      do Screen.drawPixel(x + 8, y + 10);
+      do Screen.drawPixel(x + 9, y + 10);
+      do Screen.drawPixel(x + 10, y + 10);
+      do Screen.drawPixel(x + 11, y + 10);
+      do Screen.drawPixel(x + 7, y + 11);
+      do Screen.drawPixel(x + 8, y + 11);
+      do Screen.drawPixel(x + 9, y + 11);
+      do Screen.drawPixel(x + 10, y + 11);
+      do Screen.drawPixel(x + 11, y + 11);
+      do Screen.drawPixel(x + 12, y + 11);
+      do Screen.drawPixel(x + 7, y + 12);
+      do Screen.drawPixel(x + 8, y + 12);
+      do Screen.drawPixel(x + 9, y + 12);
+      do Screen.drawPixel(x + 10, y + 12);
+      do Screen.drawPixel(x + 11, y + 12);
+      do Screen.drawPixel(x + 12, y + 12);
+      do Screen.drawPixel(x + 7, y + 13);
+      do Screen.drawPixel(x + 8, y + 13);
+      do Screen.drawPixel(x + 9, y + 13);
+      do Screen.drawPixel(x + 10, y + 13);
+      do Screen.drawPixel(x + 11, y + 13);
+      do Screen.drawPixel(x + 12, y + 13);
+      do Screen.drawPixel(x + 7, y + 14);
+      do Screen.drawPixel(x + 8, y + 14);
+      do Screen.drawPixel(x + 9, y + 14);
+      do Screen.drawPixel(x + 10, y + 14);
+      do Screen.drawPixel(x + 11, y + 14);
+      do Screen.drawPixel(x + 12, y + 14);
+      do Screen.drawPixel(x + 8, y + 15);
+      do Screen.drawPixel(x + 9, y + 15);
+      do Screen.drawPixel(x + 11, y + 15);
+
+      return;
+    }
+
+
+    method void drawSnake(){
+    do clearSquare();
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
+      return;
+    }
+
+    method void clearSquare(){      
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + squareSize - 1, y + squareSize - 1);
+      return;
+    }
+
+
+    method void setType(int t){
+      let type = t;
+      if (type = 0) {do clearSquare();}
+      if (type = 1) {do drawApple();}
+      if (type = 2) {do drawSnake();}
+      return;
+    }
+  }

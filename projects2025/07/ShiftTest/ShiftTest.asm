@@ -1,0 +1,30 @@
+//push
+@70
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP //neg group
+A=M-1
+M=M>>
+@SP //neg group
+A=M-1
+M=M<<
+//pop
+@0
+D=A
+@LCL
+M=D+M
+@SP
+M=M-1
+A=M
+D=M
+@LCL
+A=M
+M=D
+@0
+D=A
+@LCL
+M=M-D

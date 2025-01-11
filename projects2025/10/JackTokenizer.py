@@ -23,11 +23,11 @@ class JackTokenizer:
     tokens may be separated by an arbitrary number of whitespace characters, 
     and comments, which are ignored. There are three possible comment formats: 
     /* comment until closing */ , /** API comment until closing */ , and 
-    // comment until the line’s end.
+    // comment until the lines end.
 
-    - ‘xxx’: quotes are used for tokens that appear verbatim (‘terminals’).
+    - 'xxx': quotes are used for tokens that appear verbatim ('terminals').
     - xxx: regular typeface is used for names of language constructs 
-           (‘non-terminals’).
+           ('non-terminals').
     - (): parentheses are used for grouping of language constructs.
     - x | y: indicates that either x or y can appear.
     - x?: indicates that x appears 0 or 1 times.
@@ -281,13 +281,18 @@ class JackTokenizer:
 
     def split_except_strings(self, input):
         on = False
-        for i in range(len(input)):
+        res = []
+        last = 0
+        i = 0
+        while last < len(input) and i < len(input):
             c = input[i]
             if c == '"': on = not on
-            if c.isspace():
-                if on: continue
-                return [input[:i]] + self.split_except_strings(input[i+1:])
-        return []
+            if c.isspace() and not on:
+                res.append(input[last:i])
+                last = i+1
+            i = i+1
+        res.append(input[last:])
+        return res
 
     def get_value(self) -> str:
         return self.current
@@ -328,7 +333,7 @@ class JackTokenizer:
 
 
 if __name__ == "__main__":
-    argument_path = 'Square\Square.jack'
+    argument_path = 'extra/Board.jack'
     if os.path.isdir(argument_path):
         files_to_assemble = [
             os.path.join(argument_path, filename)
