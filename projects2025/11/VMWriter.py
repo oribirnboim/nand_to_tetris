@@ -66,7 +66,7 @@ class VMWriter:
             label (str): the label to write.
         """
         # Your code goes here!
-        self.write('(' + label + ')')
+        self.write('label ' + label)
 
     def write_goto(self, label: str) -> None:
         """Writes a VM goto command.
