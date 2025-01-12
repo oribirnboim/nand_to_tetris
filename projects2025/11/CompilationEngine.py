@@ -24,15 +24,12 @@ class CompilationEngine:
         self.table = table
         self.label_counter = 0
         self.class_name = ''
+        self.segment_dict = {'VAR': 'local', 'ARG': 'argument', 'FIELD': 'this', 'STATIC': 'static'}
 
     def generate_label(self) -> str:
         res = self.class_name + 'Label' + str(self.label_counter)
         self.label_counter += 1
         return res
-
-    def write_identifier(self,identifier) -> None:
-        self.write(f"<identifier> {identifier} </identifier>")
-        self.token_stream.advance()
 
     def handle_varName(self) -> None:
         """
@@ -43,23 +40,14 @@ class CompilationEngine:
         var_index = self.table.index_of(var_name)
         self.writer.write_push(var_kind,var_index)
 
-    def handle_type(self) -> None:
-        var_type = self.token_stream.token_type()
-        if var_type == "KEYWORD":
-            var_kind = self.token_stream.keyword().lower()
-            self.process(var_kind)
-        else:
-            var_kind = self.token_stream.identifier()
-            self.write_identifier(var_kind)
-
     def compile_class(self) -> None:
         """Compiles a complete class."""
 
         self.process("class")
 
-        class_name = self.token_stream.identifier() 
+        class_name = self.token_stream.identifier()
         self.class_name = class_name
-        self.write_identifier(class_name)
+        self.token_stream.advance()
 
         self.process("{")
 
@@ -75,11 +63,13 @@ class CompilationEngine:
         self.process("}")     
 
     def process(self, token: str) -> None:
+        current = None
         type = self.token_stream.token_type()
         if type == "KEYWORD":
             current = self.token_stream.keyword().lower()
         elif type == "SYMBOL":
             current = self.token_stream.symbol()
+        if not current: print(token)
         if current != token: print('expected ' + token + ' got '+ current)
         if self.token_stream.has_more_tokens(): self.token_stream.advance()
 
@@ -88,15 +78,18 @@ class CompilationEngine:
         
         # handles (static|field) section
         var_kind = self.token_stream.keyword().lower()
+        self.token_stream.advance()
         var_type = self.token_stream.keyword().lower()
+        self.token_stream.advance()
         var_name = self.token_stream.identifier()
-
+        self.token_stream.advance()
         self.table.define(var_name,var_type,var_kind.upper())
 
         # handles possible other varNames
         symbol_value = self.token_stream.symbol()
         while symbol_value != ";":
             self.process(",")
+            var_name = self.token_stream.identifier()
             self.table.define(var_name,var_type,var_kind.upper())
             self.token_stream.advance()
             symbol_value = self.token_stream.symbol()
@@ -108,10 +101,9 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
+        self.table.start_subroutine()
         self.token_stream.advance()
-
         self.token_stream.advance()
-
         subroutine_name = self.token_stream.identifier()
         self.token_stream.advance()
 
@@ -169,10 +161,6 @@ class CompilationEngine:
         """
         # Your code goes here!
         token_type = self.token_stream.token_type()
-        self.write("<statements>")
-        self.tab_number += 1
-
-        token_type = self.token_stream.token_type()
         while token_type == "KEYWORD":
             statement_kind = self.token_stream.keyword().lower()
             if statement_kind == "if":
@@ -201,7 +189,8 @@ class CompilationEngine:
         self.process('let')
         array = False
         identifier = self.token_stream.identifier()
-        segment, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+        kind, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+        segment = self.segment_dict[kind]
         self.token_stream.advance()
         s = self.token_stream.symbol()
         if s=='[':
@@ -287,8 +276,8 @@ class CompilationEngine:
             self.token_stream.advance()
             self.compile_term()
             if op == '*': self.writer.write_call('Math.multiply', 2)
-            if op == '/': self.writer.write_call('Math.divide', 2)
-            self.writer.write_arithmetic(op)
+            elif op == '/': self.writer.write_call('Math.divide', 2)
+            else: self.writer.write_arithmetic(op)
 
     def compile_string(self) -> None:
         s = self.token_stream.string_val()
@@ -340,20 +329,23 @@ class CompilationEngine:
                 self.process(')')
         if type == "IDENTIFIER":
             identifier = self.token_stream.identifier()
-            segment, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+            kind, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+            if kind: segment = self.segment_dict[kind]
             object_type = self.table.type_of(identifier)
             self.token_stream.advance()
             if self.token_stream.token_type() == "SYMBOL":
                 symbol = self.token_stream.symbol()
                 if symbol == '.':
                     self.process('.')
-                    self.writer.write_push(segment, index)
+                    if index: #if not static function
+                        self.writer.write_push(segment, index)
                     method_name = self.token_stream.identifier()
                     self.token_stream.advance()
                     self.process('(')
                     n = self.compile_expression_list()
                     self.process(')')
-                    self.writer.write_call(object_type + '.' + method_name, n+1)
+                    if index: self.writer.write_call(object_type + '.' + method_name, n+1) #if not static function
+                    else: self.writer.write_call(identifier + '.' + method_name, n)
                     return
                 if symbol == '[':
                     self.process('[')

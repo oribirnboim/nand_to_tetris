@@ -1,0 +1,187 @@
+function new 0
+push argument 0
+pop this 0
+push argument 0
+pop this 2
+push argument 0
+pop this 4
+push argument 0
+pop this 6
+push constant 2
+pop this 8
+push pointer 0
+call Bat.show 1
+pop temp 0
+push pointer 0
+return
+function dispose 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function show 0
+push constant 1
+neg
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+call Bat.draw 1
+pop temp 0
+push constant 0
+return
+function hide 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push pointer 0
+call Bat.draw 1
+pop temp 0
+push constant 0
+return
+function draw 0
+push this 0
+push this 2
+push this 0
+push this 4
+add
+push this 2
+push this 6
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function setDirection 0
+push argument 0
+pop this 8
+push constant 0
+return
+function getLeft 0
+push this 0
+return
+function getRight 0
+push this 0
+push this 4
+add
+return
+function setWidth 0
+push pointer 0
+call Bat.hide 1
+pop temp 0
+push argument 0
+pop this 4
+push pointer 0
+call Bat.show 1
+pop temp 0
+push constant 0
+return
+function move 0
+push this 8
+push constant 1
+eq
+not
+if-goto BatLabel0
+push this 0
+push constant 4
+sub
+pop this 0
+push this 0
+push constant 0
+lt
+not
+if-goto BatLabel2
+push constant 0
+pop this 0
+goto BatLabel3
+label BatLabel2
+label BatLabel3
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 4
+add
+push constant 1
+add
+push this 2
+push this 0
+push this 4
+add
+push constant 4
+add
+push this 2
+push this 6
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 1
+neg
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 2
+push this 0
+push constant 3
+add
+push this 2
+push this 6
+add
+call Screen.drawRectangle 4
+pop temp 0
+goto BatLabel1
+label BatLabel0
+push this 0
+push constant 4
+add
+pop this 0
+push this 0
+push this 4
+add
+push constant 511
+gt
+not
+if-goto BatLabel4
+push constant 511
+push this 4
+sub
+pop this 0
+goto BatLabel5
+label BatLabel4
+label BatLabel5
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push constant 4
+sub
+push this 2
+push this 0
+push constant 1
+sub
+push this 2
+push this 6
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 1
+neg
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 4
+add
+push constant 3
+sub
+push this 2
+push this 0
+push this 4
+add
+push this 2
+push this 6
+add
+call Screen.drawRectangle 4
+pop temp 0
+label BatLabel1
+push constant 0
+return
