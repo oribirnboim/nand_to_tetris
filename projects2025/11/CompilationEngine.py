@@ -116,7 +116,7 @@ class CompilationEngine:
         self.token_stream.advance()
 
         subroutine_name = self.token_stream.identifier()
-        self.write_identifier(subroutine_name)
+
 
         self.process("(")
         self.compile_parameter_list()
