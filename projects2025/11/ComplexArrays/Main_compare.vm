@@ -1,69 +1,46 @@
 function Main.main 3
-//let
-//expression
-//expression
 push constant 10
 call Array.new 1
 pop local 0
-//let
-//expression
-//expression
 push constant 5
 call Array.new 1
 pop local 1
-//let
-//expression
-//expression
 push constant 1
 call Array.new 1
 pop local 2
-//let
-push local 0
-//expression
 push constant 3
+push local 0
 add
-//expression
 push constant 2
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-push local 0
-//expression
 push constant 4
+push local 0
 add
-//expression
 push constant 8
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-push local 0
-//expression
 push constant 5
+push local 0
 add
-//expression
 push constant 4
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-push local 1
-//expression
-push local 0
-//expression
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
+push local 1
 add
-//expression
-push local 0
-//expression
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
@@ -73,51 +50,39 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-push local 0
-//expression
-push local 1
-//expression
-push local 0
-//expression
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
+push local 1
 add
 pop pointer 1
 push that 0
+push local 0
 add
-//expression
-push local 0
-//expression
-push local 0
-//expression
 push constant 5
-add
-pop pointer 1
-push that 0
-add
-pop pointer 1
-push that 0
-push local 1
-//expression
-//expression
-//expression
-push constant 7
 push local 0
-//expression
+add
+pop pointer 1
+push that 0
+push local 0
+add
+pop pointer 1
+push that 0
+push constant 7
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
 sub
-//expression
 push constant 2
 call Main.double 1
 sub
 push constant 1
 add
+push local 1
 add
 pop pointer 1
 push that 0
@@ -126,28 +91,20 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-push local 2
-//expression
 push constant 0
+push local 2
 add
-//expression
 push constant 0
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-//expression
-push local 2
-//expression
 push constant 0
+push local 2
 add
 pop pointer 1
 push that 0
 pop local 2
-//do
-//expression
 push constant 43
 call String.new 1
 push constant 84
@@ -238,21 +195,15 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-//do
-//expression
-push local 1
-//expression
 push constant 2
+push local 1
 add
 pop pointer 1
 push that 0
 call Output.printInt 1
 pop temp 0
-//do
 call Output.println 0
 pop temp 0
-//do
-//expression
 push constant 44
 call String.new 1
 push constant 84
@@ -345,21 +296,15 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-//do
-//expression
-push local 0
-//expression
 push constant 5
+push local 0
 add
 pop pointer 1
 push that 0
 call Output.printInt 1
 pop temp 0
-//do
 call Output.println 0
 pop temp 0
-//do
-//expression
 push constant 43
 call String.new 1
 push constant 84
@@ -450,96 +395,67 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-//do
-//expression
 push local 2
 call Output.printInt 1
 pop temp 0
-//do
 call Output.println 0
 pop temp 0
-//let
-//expression
 push constant 0
 pop local 2
-//if
-//expression
 push local 2
 push constant 0
 eq
-not
-if-goto MainLabel0
-//do
-//expression
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push local 0
-//expression
 push constant 10
 call Main.fill 2
 pop temp 0
-//let
-//expression
-push local 0
-//expression
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
 pop local 2
-//let
-push local 2
-//expression
 push constant 1
+push local 2
 add
-//expression
 push constant 33
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-//expression
-push local 0
-//expression
 push constant 7
+push local 0
 add
 pop pointer 1
 push that 0
 pop local 2
-//let
-push local 2
-//expression
 push constant 1
+push local 2
 add
-//expression
 push constant 77
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-//let
-//expression
-push local 0
-//expression
 push constant 3
+push local 0
 add
 pop pointer 1
 push that 0
 pop local 1
-//let
-push local 1
-//expression
 push constant 1
+push local 1
 add
-//expression
-push local 1
-//expression
 push constant 1
+push local 1
 add
 pop pointer 1
 push that 0
-push local 2
-//expression
 push constant 1
+push local 2
 add
 pop pointer 1
 push that 0
@@ -548,11 +464,7 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-goto MainLabel1
-label MainLabel0
-label MainLabel1
-//do
-//expression
+label IF_FALSE0
 push constant 44
 call String.new 1
 push constant 84
@@ -645,21 +557,15 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-//do
-//expression
-push local 2
-//expression
 push constant 1
+push local 2
 add
 pop pointer 1
 push that 0
 call Output.printInt 1
 pop temp 0
-//do
 call Output.println 0
 pop temp 0
-//do
-//expression
 push constant 45
 call String.new 1
 push constant 84
@@ -754,59 +660,43 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-//do
-//expression
-push local 1
-//expression
 push constant 1
+push local 1
 add
 pop pointer 1
 push that 0
 call Output.printInt 1
 pop temp 0
-//do
 call Output.println 0
 pop temp 0
-//return
 push constant 0
 return
 function Main.double 0
-//return
-//expression
 push argument 0
 push constant 2
 call Math.multiply 2
 return
 function Main.fill 0
-//while
-label MainLabel2
-//expression
+label WHILE_EXP0
 push argument 1
 push constant 0
 gt
 not
-if-goto MainLabel3
-//let
-//expression
+if-goto WHILE_END0
 push argument 1
 push constant 1
 sub
 pop argument 1
-//let
-push argument 0
-//expression
 push argument 1
+push argument 0
 add
-//expression
-//expression
 push constant 3
 call Array.new 1
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-goto MainLabel2
-label MainLabel3
-//return
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return

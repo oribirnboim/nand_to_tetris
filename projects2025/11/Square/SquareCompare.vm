@@ -1,218 +1,234 @@
 function Square.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
 push argument 0
 pop this 0
-push argument 0
+push argument 1
+pop this 1
+push argument 2
 pop this 2
-push argument 0
-pop this 4
 push pointer 0
 call Square.draw 1
 pop temp 0
 push pointer 0
 return
 function Square.dispose 0
+push argument 0
+pop pointer 0
 push pointer 0
 call Memory.deAlloc 1
 pop temp 0
 push constant 0
 return
 function Square.draw 0
-push constant 1
-neg
+push argument 0
+pop pointer 0
+push constant 0
+not
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
 function Square.erase 0
+push argument 0
+pop pointer 0
 push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
 function Square.incSize 0
+push argument 0
+pop pointer 0
+push this 1
 push this 2
-push this 4
 add
 push constant 254
 lt
 push this 0
-push this 4
+push this 2
 add
 push constant 510
 lt
 and
-not
-if-goto SquareLabel0
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push pointer 0
 call Square.erase 1
 pop temp 0
-push this 4
+push this 2
 push constant 2
 add
-pop this 4
+pop this 2
 push pointer 0
 call Square.draw 1
 pop temp 0
-goto SquareLabel1
-label SquareLabel0
-label SquareLabel1
+label IF_FALSE0
 push constant 0
 return
 function Square.decSize 0
-push this 4
+push argument 0
+pop pointer 0
+push this 2
 push constant 2
 gt
-not
-if-goto SquareLabel2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push pointer 0
 call Square.erase 1
 pop temp 0
-push this 4
+push this 2
 push constant 2
 sub
-pop this 4
+pop this 2
 push pointer 0
 call Square.draw 1
 pop temp 0
-goto SquareLabel3
-label SquareLabel2
-label SquareLabel3
+label IF_FALSE0
 push constant 0
 return
 function Square.moveUp 0
-push this 2
+push argument 0
+pop pointer 0
+push this 1
 push constant 1
 gt
-not
-if-goto SquareLabel4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
+push this 1
 push this 2
-push this 4
 add
 push constant 1
 sub
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-push this 2
+push this 1
 push constant 2
 sub
-pop this 2
-push constant 1
-neg
+pop this 1
+push constant 0
+not
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
+add
+push this 1
 push constant 1
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto SquareLabel5
-label SquareLabel4
-label SquareLabel5
+label IF_FALSE0
 push constant 0
 return
 function Square.moveDown 0
+push argument 0
+pop pointer 0
+push this 1
 push this 2
-push this 4
 add
 push constant 254
 lt
-not
-if-goto SquareLabel6
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
+add
+push this 1
 push constant 1
 add
 call Screen.drawRectangle 4
 pop temp 0
-push this 2
+push this 1
 push constant 2
 add
-pop this 2
-push constant 1
-neg
+pop this 1
+push constant 0
+not
 call Screen.setColor 1
 pop temp 0
 push this 0
+push this 1
 push this 2
-push this 4
 add
 push constant 1
 sub
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto SquareLabel7
-label SquareLabel6
-label SquareLabel7
+label IF_FALSE0
 push constant 0
 return
 function Square.moveLeft 0
+push argument 0
+pop pointer 0
 push this 0
 push constant 1
 gt
-not
-if-goto SquareLabel8
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 4
+push this 2
 add
 push constant 1
 sub
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -220,43 +236,44 @@ push this 0
 push constant 2
 sub
 pop this 0
-push constant 1
-neg
+push constant 0
+not
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
 push constant 1
 add
+push this 1
 push this 2
-push this 4
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto SquareLabel9
-label SquareLabel8
-label SquareLabel9
+label IF_FALSE0
 push constant 0
 return
 function Square.moveRight 0
+push argument 0
+pop pointer 0
 push this 0
-push this 4
+push this 2
 add
 push constant 510
 lt
-not
-if-goto SquareLabel10
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
 push constant 0
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 2
+push this 1
 push this 0
 push constant 1
 add
+push this 1
 push this 2
-push this 4
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -264,26 +281,24 @@ push this 0
 push constant 2
 add
 pop this 0
-push constant 1
-neg
+push constant 0
+not
 call Screen.setColor 1
 pop temp 0
 push this 0
-push this 4
+push this 2
 add
 push constant 1
 sub
-push this 2
+push this 1
 push this 0
-push this 4
-add
 push this 2
-push this 4
+add
+push this 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto SquareLabel11
-label SquareLabel10
-label SquareLabel11
+label IF_FALSE0
 push constant 0
 return

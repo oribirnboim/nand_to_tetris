@@ -59,13 +59,17 @@ class SymbolTable:
         """
         # Your code goes here!
         occurences = 0
+        is_in_subroutine = False
+        for var in self.subroutine_table:
+            if var[2] == kind:
+                occurences += 1
+                is_in_subroutine = True
+        if is_in_subroutine: return occurences
         for var in self.class_table:
             if var[2] == kind:
                 occurences += 1
-        for var in self.class_table:
-            if var[2] == kind:
-                occurences += 1
-        return occurences
+        return occurences 
+
 
     def kind_of(self, name: str) -> str:
         """
@@ -77,10 +81,10 @@ class SymbolTable:
             if the identifier is unknown in the current scope.
         """
         # Your code goes here!
-        for var in self.class_table:
+        for var in self.subroutine_table:
             if var[0] == name:
                 return var[2] # var kind
-        for var in self.subroutine_table:
+        for var in self.class_table:
             if var[0] == name:
                 return var[2] # var kind
         return None
@@ -94,10 +98,10 @@ class SymbolTable:
             str: the type of the named identifier in the current scope.
         """
         # Your code goes here!
-        for var in self.class_table:
+        for var in self.subroutine_table:
             if var[0] == name:
                 return var[1] # var type
-        for var in self.subroutine_table:
+        for var in self.class_table:
             if var[0] == name:
                 return var[1] # var type
         return None
@@ -111,10 +115,10 @@ class SymbolTable:
             int: the index assigned to the named identifier.
         """
         # Your code goes here!
-        for var in self.class_table:
+        for var in self.subroutine_table:
             if var[0] == name:
                 return var[3] # var index
-        for var in self.subroutine_table:
+        for var in self.class_table:
             if var[0] == name:
                 return var[3] # var index
         return None
