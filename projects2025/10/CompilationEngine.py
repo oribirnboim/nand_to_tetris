@@ -29,6 +29,10 @@ class CompilationEngine:
         self.output_stream.write(("  " * self.tab_number) + string + "\n")
         # print(("  " * self.tab_number) + string)
 
+    def clean_for_xml(self, s: str) -> str:
+        replacements = {'<': '&lt;', '>': '&gt;', '&': '&amp;'}
+        return ''.join(replacements.get(c, c) for c in s)
+
     def write_identifier(self,identifier) -> None:
         self.write(f"<identifier> {identifier} </identifier>")
         self.input_stream.advance()
@@ -329,7 +333,8 @@ class CompilationEngine:
             self.write('<integerConstant> ' + str(self.input_stream.int_val()) + ' </integerConstant>')
             self.input_stream.advance()
         if type == "STRING_CONST":
-            self.write('<stringConstant> ' + self.input_stream.string_val() + ' </stringConstant>')
+            clean = self.clean_for_xml(self.input_stream.string_val())
+            self.write('<stringConstant> ' + clean + ' </stringConstant>')
             self.input_stream.advance()
         if type == "KEYWORD" and (self.input_stream.keyword().lower() in keyword_constants):
             self.write('<keyword> ' + self.input_stream.keyword().lower() + ' </keyword>')

@@ -1,0 +1,328 @@
+<class>
+  <keyword> class </keyword>
+  <identifier> StringTest </identifier>
+  <symbol> { </symbol>
+  <classVarDec>
+    <keyword> field </keyword>
+    <identifier> String </identifier>
+    <identifier> testString </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <identifier> String </identifier>
+    <identifier> result </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
+    <keyword> field </keyword>
+    <keyword> int </keyword>
+    <identifier> counter </identifier>
+    <symbol> ; </symbol>
+  </classVarDec>
+  <subroutineDec>
+    <keyword> constructor </keyword>
+    <identifier> StringTest </identifier>
+    <identifier> new </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> testString </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <stringConstant> Outer string with embedded quote and a backslash. </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <stringConstant> Edge cases:  </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> counter </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <integerConstant> 0 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <keyword> this </keyword>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> test </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Hello, World! </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Numbers: 1234567890 </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> myString </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <stringConstant>  !\#$%&amp;'()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> String with spaces </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Comma, Period. </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Path with backslash: C:Program FilesTest </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> String with no internal quotes </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Empty string:  </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Single character: A </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> Multiple </stringConstant>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant>   </stringConstant>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> strings </stringConstant>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant>   </stringConstant>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> concatenated </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> result </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> result </identifier>
+            </term>
+            <symbol> + </symbol>
+            <term>
+              <stringConstant> c;c </stringConstant>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Output </identifier>
+          <symbol> . </symbol>
+          <identifier> printString </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <identifier> result </identifier>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <subroutineDec>
+    <keyword> method </keyword>
+    <keyword> void </keyword>
+    <identifier> destroy </identifier>
+    <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
+    <symbol> ) </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> Memory </identifier>
+          <symbol> . </symbol>
+          <identifier> deAlloc </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+            <expression>
+              <term>
+                <keyword> this </keyword>
+              </term>
+            </expression>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>
