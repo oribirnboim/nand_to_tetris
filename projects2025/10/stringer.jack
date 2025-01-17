@@ -1,0 +1,56 @@
+class StringTest {
+  field String testString;
+  field String result;
+  field int counter;
+
+  constructor StringTest new() {
+    let testString = "Outer string with embedded quote and a backslash." ;
+    let result = "Edge cases: " ;
+    let counter = 0;
+    return this;
+  }
+
+  method void test() {
+    // Case 1: Simple string with no special characters
+    let result = result + "Hello, World!" ;
+
+    // Case 2: String with numbers
+    let result = result + "Numbers: 1234567890" ;
+
+    // Case 3: String with special characters
+    let myString = " !\#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ;
+
+    // Case 4: String with spaces
+    let result = result + "String with spaces" ;
+
+    // Case 5: String with commas and periods
+    let result = result + "Comma, Period." ;
+
+    // Case 6: String with a backslash
+    let result = result + "Path with backslash: C:Program FilesTest" ;
+
+    // Case 7: String without quotes inside
+    let result = result + "String with no internal quotes" ;
+
+    // Case 8: Empty string
+    let result = result + "Empty string: " ;
+
+    // Case 9: String with a single character
+    let result = result + "Single character: A" ;
+
+    // Case 10: Concatenate multiple strings together
+    let result = result + "Multiple" + " " + "strings" + " " + "concatenated" ;
+
+    // Case 11: Concatenate multiple strings together
+    let result = result + "c;c" ;
+    
+    // Output all results
+    do Output.printString(result);
+    return;
+  }
+
+  method void destroy() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}
