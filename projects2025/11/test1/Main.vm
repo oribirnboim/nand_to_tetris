@@ -1,41 +1,27 @@
 function Main.main 2
-//let
-//expression
 push constant 0
 pop local 0
-//let
-//expression
 push constant 0
 pop local 1
-//while
 label MainLabel0
-//expression
 push local 0
 push constant 10
 lt
 not
 if-goto MainLabel1
-//let
-//expression
 push local 0
 push constant 1
 add
 pop local 0
-//let
-//expression
 push local 1
 push local 0
 add
 pop local 1
 goto MainLabel0
 label MainLabel1
-//do
-//expression
 push constant 5000
-//expression
 push local 1
 call Memory.poke 2
 pop temp 0
-//return
 push constant 0
 return

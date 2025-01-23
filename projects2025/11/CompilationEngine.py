@@ -103,8 +103,11 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
-        self.table.start_subroutine()
         subroutine_type = self.token_stream.keyword()
+        if subroutine_type.lower() == "method":
+            self.table.start_subroutine(self.class_name)
+        else:
+            self.table.start_subroutine()
         self.token_stream.advance()
         self.token_stream.advance()
         subroutine_name = self.token_stream.identifier()
@@ -125,7 +128,7 @@ class CompilationEngine:
             self.writer.write_push('constant', self.table.var_count('FIELD'))
             self.writer.write_call('Memory.alloc', 1)
             self.writer.write_pop('pointer', 0)
-        elif self.class_name != "Main" or subroutine_name != "main":
+        elif subroutine_type.lower() == "method":
             self.writer.write_push('argument',0)
             self.writer.write_pop('pointer', 0)
 
@@ -357,6 +360,7 @@ class CompilationEngine:
                 symbol = self.token_stream.symbol()
                 if symbol == '.':
                     self.process('.')
+                    self.table.define('self',object_type, "ARG")
                     if index != None: #if not static function
                         self.writer.write_push(segment, index)
                     method_name = self.token_stream.identifier()

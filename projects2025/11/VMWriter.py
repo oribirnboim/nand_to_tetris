@@ -28,8 +28,8 @@ class VMWriter:
         self.stream.write(s + '\n')
     
     def comment(self, com: str):
-        self.write('//' + com)
-
+        # self.write('//' + com)
+        return
 
     def write_push(self, segment: str, index: int) -> None:
         """Writes a VM push command.

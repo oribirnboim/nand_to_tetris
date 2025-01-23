@@ -2,49 +2,33 @@ function T.new 0
 push constant 1
 call Memory.alloc 1
 pop pointer 0
-//let
-//expression
 push argument 0
 pop this 0
-//return
-//expression
 push pointer 0
 return
 function T.doNothing 1
 push argument 0
 pop pointer 0
-//let
-//expression
-push argument 0
+push argument 1
 pop local 0
-//let
-//expression
 push local 0
-pop argument 0
-//return
+pop argument 1
 push constant 0
 return
 function T.doNothing2 1
 push argument 0
 pop pointer 0
-//let
-//expression
-//expression
 push local 0
-push argument 0
+push argument 1
 add
 push constant 3
 add
 not
 pop local 0
-//return
-//expression
 push local 0
 return
 function T.getX 0
 push argument 0
 pop pointer 0
-//return
-//expression
 push this 0
 return

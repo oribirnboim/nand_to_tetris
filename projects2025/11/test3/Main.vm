@@ -1,30 +1,16 @@
 function Main.main 12
-//let
-//expression
 push constant 1
 pop local 0
-//let
-//expression
 push constant 2
 pop local 1
-//let
-//expression
 push constant 3
 pop local 2
-//let
-//expression
 push constant 4
 pop local 3
-//let
-//expression
 push constant 5
 pop local 4
-//let
-//expression
 push constant 6
 pop local 5
-//let
-//expression
 push local 0
 push local 1
 add
@@ -37,31 +23,21 @@ add
 push local 5
 add
 pop local 6
-//let
-//expression
-//expression
 push local 0
 push local 1
 call Math.multiply 2
-//expression
 push local 2
 push local 3
 call Math.multiply 2
 add
-//expression
 push local 4
 push local 5
 call Math.multiply 2
 add
 pop local 7
-//let
-//expression
-//expression
-//expression
 push local 5
 push local 1
 call Math.divide 2
-//expression
 push local 4
 push local 0
 call Math.divide 2
@@ -69,27 +45,17 @@ add
 push local 1
 call Math.divide 2
 pop local 8
-//do
-//expression
 push constant 5000
-//expression
 push local 6
 call Memory.poke 2
 pop temp 0
-//do
-//expression
 push constant 5001
-//expression
 push local 7
 call Memory.poke 2
 pop temp 0
-//do
-//expression
 push constant 5002
-//expression
 push local 8
 call Memory.poke 2
 pop temp 0
-//return
 push constant 0
 return

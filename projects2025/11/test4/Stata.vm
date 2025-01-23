@@ -1,27 +1,13 @@
 function Stata.init 0
-push argument 0
-pop pointer 0
-//let
-//expression
 push constant 1
 pop static 0
-//return
 push constant 0
 return
 function Stata.setVal 0
 push argument 0
-pop pointer 0
-//let
-//expression
-push argument 0
 pop static 0
-//return
 push constant 0
 return
 function Stata.getVal 0
-push argument 0
-pop pointer 0
-//return
-//expression
 push static 0
 return

@@ -21,12 +21,15 @@ class SymbolTable:
         self.subroutine_table = []
         self.types = []
 
-    def start_subroutine(self) -> None:
+    def start_subroutine(self,class_name= None) -> None:
         """Starts a new subroutine scope (i.e., resets the subroutine's 
         symbol table).
         """
         # Your code goes here!
-        self.subroutine_table = []   
+        if class_name:
+            self.subroutine_table = [['this', class_name, "ARG", 0]]   
+        else:
+            self.subroutine_table = []
 
     def define(self, name: str, type: str, kind: str) -> None:
         """Defines a new identifier of a given name, type and kind and assigns 
