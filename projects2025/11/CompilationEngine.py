@@ -77,19 +77,21 @@ class CompilationEngine:
         """Compiles a static declaration or a field declaration."""
         
         # handles (static|field) section
-        var_kind = self.token_stream.keyword().lower()
+        var_kind = self.token_stream.keyword()
         self.token_stream.advance()
         var_type = self.token_stream.keyword().lower()
         self.token_stream.advance()
         var_name = self.token_stream.identifier()
         self.token_stream.advance()
-        self.table.define(var_name,var_type,var_kind.upper())
+        self.table.define(var_name,var_type,var_kind)
 
         # handles possible other varNames
         symbol_value = self.token_stream.symbol()
         while symbol_value != ";":
             self.process(",")
             var_name = self.token_stream.identifier()
+            if var_kind == "FIELD":
+                self.num_class_var_decs += 1
             self.table.define(var_name,var_type,var_kind.upper())
             self.token_stream.advance()
             symbol_value = self.token_stream.symbol()
@@ -101,14 +103,15 @@ class CompilationEngine:
         You can assume that classes with constructors have at least one field,
         you will understand why this is necessary in project 11.
         """
-        self.table.start_subroutine()
+        subroutine_type = self.token_stream.keyword()
+        if subroutine_type.lower() == "method":
+            self.table.start_subroutine(self.class_name)
+        else:
+            self.table.start_subroutine()
         self.token_stream.advance()
         self.token_stream.advance()
         subroutine_name = self.token_stream.identifier()
         self.token_stream.advance()
-
-        subroutine_name = self.token_stream.identifier()
-
 
         self.process("(")
         self.compile_parameter_list()
@@ -119,7 +122,16 @@ class CompilationEngine:
         while self.token_stream.token_type() == 'KEYWORD' and self.token_stream.keyword()=='VAR':
             line_n_vars = self.compile_var_dec()
             n_vars += line_n_vars
-        self.writer.write_function(subroutine_name, n_vars)
+        self.writer.write_function(f"{self.class_name}.{subroutine_name}", n_vars)
+
+        if subroutine_type == 'CONSTRUCTOR':
+            self.writer.write_push('constant', self.table.var_count('FIELD'))
+            self.writer.write_call('Memory.alloc', 1)
+            self.writer.write_pop('pointer', 0)
+        elif subroutine_type.lower() == "method":
+            self.writer.write_push('argument',0)
+            self.writer.write_pop('pointer', 0)
+
         self.compile_statements()
         self.process("}")
 
@@ -179,6 +191,7 @@ class CompilationEngine:
         """Compiles a do statement."""
         # Your code goes here!
         self.process('do')
+        self.writer.comment('do')
         self.compile_term()
         self.writer.write_pop('temp', 0)
         self.process(';')
@@ -187,10 +200,16 @@ class CompilationEngine:
         """Compiles a let statement."""
         # Your code goes here!
         self.process('let')
+        self.writer.comment('let')
         array = False
-        identifier = self.token_stream.identifier()
-        kind, index = self.table.kind_of(identifier), self.table.index_of(identifier)
-        segment = self.segment_dict[kind]
+        token_kind = self.token_stream.token_type()
+        if token_kind == "KEYWORD":
+            segment = self.token_stream.keyword().lower()
+            index = 0
+        else:
+            identifier = self.token_stream.identifier()
+            kind, index = self.table.kind_of(identifier), self.table.index_of(identifier)
+            segment = self.segment_dict[kind]
         self.token_stream.advance()
         s = self.token_stream.symbol()
         if s=='[':
@@ -217,6 +236,7 @@ class CompilationEngine:
         start_while = self.generate_label()
         end_while = self.generate_label()
         self.process('while')
+        self.writer.comment('while')
         self.process('(')
         self.writer.write_label(start_while)
         self.compile_expression()
@@ -233,6 +253,7 @@ class CompilationEngine:
         """Compiles a return statement."""
         # Your code goes here!
         self.process('return')
+        self.writer.comment('return')
         type = self.token_stream.token_type()
         if type == "SYMBOL" and self.token_stream.symbol() == ';':
             self.writer.write_push('constant', 0)
@@ -247,6 +268,7 @@ class CompilationEngine:
         start_else = self.generate_label()
         end_else = self.generate_label()
         self.process('if')
+        self.writer.comment('if')
         self.process('(')
         self.compile_expression()
         self.writer.write_arithmetic('not')
@@ -270,6 +292,7 @@ class CompilationEngine:
         # Your code goes here!
         ops = {'+': 'add', '-': 'sub', '*': '*', '/': '/',
                '&': 'and', '|': 'or', '<': 'lt', '>': 'gt', '=': 'eq'}
+        self.writer.comment('expression')
         self.compile_term()
         while self.token_stream.token_type()=='SYMBOL' and (self.token_stream.symbol() in ops.keys()):
             op = ops[self.token_stream.symbol()]
@@ -337,15 +360,23 @@ class CompilationEngine:
                 symbol = self.token_stream.symbol()
                 if symbol == '.':
                     self.process('.')
-                    if index: #if not static function
+                    self.table.define('self',object_type, "ARG")
+                    if index != None: #if not static function
                         self.writer.write_push(segment, index)
                     method_name = self.token_stream.identifier()
                     self.token_stream.advance()
-                    self.process('(')
-                    n = self.compile_expression_list()
-                    self.process(')')
-                    if index: self.writer.write_call(object_type + '.' + method_name, n+1) #if not static function
-                    else: self.writer.write_call(identifier + '.' + method_name, n)
+
+                    if index != None:
+                        self.process('(')
+                        n = self.compile_expression_list()
+                        self.process(')')
+                        self.writer.write_call(object_type + '.' + method_name, n+1) #if not static function
+                    else:
+                        self.process('(')
+                        n = self.compile_expression_list()
+                        self.process(')')
+                        self.writer.write_call(identifier + '.' + method_name, n)
+
                     return
                 if symbol == '[':
                     self.process('[')

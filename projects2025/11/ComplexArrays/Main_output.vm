@@ -10,13 +10,13 @@ pop local 0
 //expression
 push constant 5
 call Array.new 1
-pop local 1
+pop local 0
 //let
 //expression
 //expression
 push constant 1
 call Array.new 1
-pop local 2
+pop local 0
 //let
 push local 0
 //expression
@@ -51,7 +51,7 @@ pop pointer 1
 push temp 0
 pop that 0
 //let
-push local 1
+push local 0
 //expression
 push local 0
 //expression
@@ -76,7 +76,7 @@ pop that 0
 //let
 push local 0
 //expression
-push local 1
+push local 0
 //expression
 push local 0
 //expression
@@ -100,7 +100,7 @@ push that 0
 add
 pop pointer 1
 push that 0
-push local 1
+push local 0
 //expression
 //expression
 //expression
@@ -127,7 +127,7 @@ pop pointer 1
 push temp 0
 pop that 0
 //let
-push local 2
+push local 0
 //expression
 push constant 0
 add
@@ -139,13 +139,13 @@ push temp 0
 pop that 0
 //let
 //expression
-push local 2
+push local 0
 //expression
 push constant 0
 add
 pop pointer 1
 push that 0
-pop local 2
+pop local 0
 //do
 //expression
 push constant 43
@@ -240,7 +240,7 @@ call Output.printString 1
 pop temp 0
 //do
 //expression
-push local 1
+push local 0
 //expression
 push constant 2
 add
@@ -452,7 +452,7 @@ call Output.printString 1
 pop temp 0
 //do
 //expression
-push local 2
+push local 0
 call Output.printInt 1
 pop temp 0
 //do
@@ -461,10 +461,10 @@ pop temp 0
 //let
 //expression
 push constant 0
-pop local 2
+pop local 0
 //if
 //expression
-push local 2
+push local 0
 push constant 0
 eq
 not
@@ -484,9 +484,9 @@ push constant 3
 add
 pop pointer 1
 push that 0
-pop local 2
+pop local 0
 //let
-push local 2
+push local 0
 //expression
 push constant 1
 add
@@ -504,9 +504,9 @@ push constant 7
 add
 pop pointer 1
 push that 0
-pop local 2
+pop local 0
 //let
-push local 2
+push local 0
 //expression
 push constant 1
 add
@@ -524,20 +524,20 @@ push constant 3
 add
 pop pointer 1
 push that 0
-pop local 1
+pop local 0
 //let
-push local 1
+push local 0
 //expression
 push constant 1
 add
 //expression
-push local 1
+push local 0
 //expression
 push constant 1
 add
 pop pointer 1
 push that 0
-push local 2
+push local 0
 //expression
 push constant 1
 add
@@ -647,7 +647,7 @@ call Output.printString 1
 pop temp 0
 //do
 //expression
-push local 2
+push local 0
 //expression
 push constant 1
 add
@@ -756,7 +756,7 @@ call Output.printString 1
 pop temp 0
 //do
 //expression
-push local 1
+push local 0
 //expression
 push constant 1
 add
@@ -781,21 +781,21 @@ function Main.fill 0
 //while
 label MainLabel2
 //expression
-push argument 1
+push argument 0
 push constant 0
 gt
 not
 if-goto MainLabel3
 //let
 //expression
-push argument 1
+push argument 0
 push constant 1
 sub
-pop argument 1
+pop argument 0
 //let
 push argument 0
 //expression
-push argument 1
+push argument 0
 add
 //expression
 //expression
