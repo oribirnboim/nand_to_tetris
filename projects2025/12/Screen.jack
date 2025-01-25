@@ -11,17 +11,29 @@
  * the screen is indexed (0,0).
  */
 class Screen {
+        static boolean color;
+
         /** Initializes the Screen. */
         function void init() {
+            let color = true;
+            return;
         }
 
         /** Erases the entire screen. */
         function void clearScreen() {
+            var boolean prev_color;
+            let prev_color = color;
+            let color = false;
+            do Screen.drawRectangle(0,0,255,511);
+            let color = prev_color;
+            return;
         }
 
         /** Sets the current color, to be used for all subsequent drawXXX commands.
          *    Black is represented by true, white by false. */
         function void setColor(boolean b) {
+            let color = b;
+            return;
         }
 
         /** Draws the (x,y) pixel, using the current color. */
@@ -39,7 +51,23 @@ class Screen {
             //    to the pixel to the current color.
             // 4. Use Memory.poke to write the modified 16-bit value to the RAM
             // address.
-        }
+            var int pixelRAMIndex;
+            var int pixelValue;
+            var int pixelBitIndex;
+            var int i,k;
+            let pixelRAMIndex = 16384 + (32 * y) + (x/16);
+            let pixelValue = Memory.peek(pixelRAMIndex);
+            let pixelBitIndex = (x-(16*(x/16)));
+            let k = 1;
+            while (i < pixelBitIndex){
+                let k = k + k;
+                let i = i + 1;
+            }
+            if (color) {let pixelValue = pixelValue | k;}
+            else {let pixelValue = pixelValue & (~k);}
+            do Memory.poke(pixelRAMIndex, pixelValue);
+            return;
+        }   
 
         /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
         function void drawLine(int x1, int y1, int x2, int y2) {
@@ -56,11 +84,65 @@ class Screen {
             // The case where y1 == y2 can be implemented efficiently by
             // trying to draw as many pixels as possible in a single assignment,
             // similarly to Fill in project 4.
+            var int start_pixel, end_pixel, remainder, startRAMIndex;
+            var int x, y, a, b, diff, dx, dy, X, Y, i;
+            var int i;
+            if (y1 = y2){
+                if (x2 > x1) {let x = x1; let a = x2;}
+                else       {let x = x2; let a = x1;}
+
+                let i = 0;
+                let remainder = 16-(x-(16*(x/16)));
+                let i = 0;
+                while (i < remainder){do Screen.drawPixel(x + i,y1); let i = i + 1;}
+                let startRAMIndex = 16384 + (32 * (y1-1)) + (a/16);
+                let i = 2;
+                while (i < (((a-x)/16)+1)){
+                    if (color) /*is black*/ {do Memory.poke(startRAMIndex + i,-1);}
+                    else /*is white*/ {do Memory.poke(startRAMIndex + i,0);}
+                    let i = i + 1;
+                }
+                let i = 0;
+                let remainder = (a-(16*(a/16)))+1;
+                while (i < remainder){do Screen.drawPixel(a - i,y1); let i = i + 1;}
+            }
+            //now handles the case where y1 != y2.
+            else{
+                if (x2 > x1) {let x = x1;let X = x2;let y = y1; let Y = y2;} else {let x = x2; let X = x1;let y = y2; let Y = y1;}
+                let a = 1;
+                let b = 0;
+                let dx = X - x;
+                let dy = Y - y;
+                let diff = 0;
+                do Screen.drawPixel(x,y);
+                if dy > 0{
+                while ((a < (dx + 1)) | (b < (dy + 1))){
+                    do Screen.drawPixel(x+a, y+b);
+                    if (diff < 0) {let a = a + 1; let diff = diff + dy;}
+                    else {let b = b + 1; let diff = diff - dx;}
+                }
+                }
+            
+                else{
+                while ((a < (dx + 1)) | (b > (dy - 1))){
+                    do Screen.drawPixel(x+a, y+b);
+                    if (diff < 0) {let a = a + 1; let diff = diff - dy;}
+                    else {let b = b - 1; let diff = diff - dx;}
+                }
+                
+            }
+            return;   
         }
 
         /** Draws a filled rectangle whose top left corner is (x1, y1)
          * and bottom right corner is (x2,y2), using the current color. */
         function void drawRectangle(int x1, int y1, int x2, int y2) {
+            var int i, startY, endY;
+            if (y2 > y1) {let startY = y1; let endY = y2;}
+            else       {let startY = y2; let endY = y1;}
+            let i = 0;
+            while (i < (endY - startY)) {do Screen.drawLine(x1, startY + i, x2, startY + i); let i = i + 1;}
+            return;
         }
 
         /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
@@ -71,5 +153,12 @@ class Screen {
             // 1. for (dy = -r ... r)
             // 2.   let halfWidth = sqrt(r*r - dy*dy)
             // 3.   do drawLine(x-halfWidth, y+dy, x+halfWidth, y+dy)
+            var int dy, halfWidth;
+            let dy = -1 * r;
+            while (dy < r + 1){
+            let halfWidth = Math.sqrt (r*r-dy*dy);
+            do Screen.drawLine(x - halfWidth, y + dy, x + halfWidth, y + dy);
+            }
+            return;
         }
 }
