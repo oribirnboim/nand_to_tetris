@@ -12,11 +12,16 @@
  * data types.
  */
 class Array {
-    /** Constructs a new Array of the given size. */
-    function Array new(int size) {
-    }
+  /** Constructs a new Array of the given size. */
+  function Array new(int size) {
+    var array res;
+    let res = Memory.alloc(size);
+    return res;
+  }
 
-    /** Disposes this array. */
-    method void dispose() {
-    }
+  /** Disposes this array. */
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
 }
