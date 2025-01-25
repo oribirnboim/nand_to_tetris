@@ -15,10 +15,10 @@ class Sys {
     //    Some OS classes depend on others, so order is important here!
     // 2. do Main.main()
     // 3. do Sys.halt()
-    do Keyboard.init();
-    do Math.init();
     do Memory.init();
+    do Math.init();
     do Screen.init();
+    do Keyboard.init();
     do Output.init();
     do Main.main();
     do Sys.halt();

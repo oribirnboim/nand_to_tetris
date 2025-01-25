@@ -1,0 +1,635 @@
+function Memory.init 0
+push constant 2048
+pop static 0
+push static 0
+push constant 14336
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 1
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Memory.peek 1
+push argument 0
+pop local 0
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+return
+function Memory.poke 1
+push argument 0
+pop local 0
+push constant 0
+push local 0
+add
+push argument 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return
+function Memory.alloc 3
+push static 0
+pop local 0
+push constant 1
+push local 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push argument 0
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+push argument 0
+sub
+push constant 3
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 1
+pop static 0
+push local 0
+push constant 1
+add
+return
+label IF_FALSE1
+push argument 0
+push constant 2
+add
+push local 0
+add
+push constant 1
+push local 0
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push argument 0
+push constant 1
+add
+push local 0
+add
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+push argument 0
+sub
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push local 0
+add
+push argument 0
+push constant 1
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push static 0
+push argument 0
+add
+push constant 1
+add
+pop static 0
+push local 0
+push constant 1
+add
+return
+label IF_FALSE0
+label WHILE_EXP0
+push local 1
+push constant 0
+eq
+not
+not
+if-goto WHILE_END0
+push argument 0
+push constant 0
+push local 1
+add
+pop pointer 1
+push that 0
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+push local 1
+add
+pop pointer 1
+push that 0
+push argument 0
+sub
+push constant 3
+lt
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 1
+push local 0
+add
+push constant 1
+push local 1
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+return
+label IF_FALSE3
+push argument 0
+push constant 2
+add
+push local 1
+add
+push constant 1
+push local 1
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push argument 0
+push constant 1
+add
+push local 1
+add
+push constant 0
+push local 1
+add
+pop pointer 1
+push that 0
+push argument 0
+sub
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push local 1
+add
+push argument 0
+push constant 1
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 1
+push local 0
+add
+pop pointer 1
+push that 0
+push argument 0
+add
+push constant 1
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+return
+goto IF_END2
+label IF_FALSE2
+push local 1
+pop local 0
+push local 1
+push constant 1
+add
+call Memory.peek 1
+pop local 1
+label IF_END2
+goto WHILE_EXP0
+label WHILE_END0
+push constant 1
+neg
+return
+function Memory.deAlloc 2
+push static 0
+pop local 0
+push constant 1
+push local 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push argument 0
+push static 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+push constant 1
+sub
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+push static 0
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 1
+neg
+push argument 0
+add
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+push constant 0
+push static 0
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push argument 0
+add
+push constant 1
+push static 0
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+goto IF_END1
+label IF_FALSE1
+push constant 0
+push argument 0
+add
+push static 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push argument 0
+push constant 1
+sub
+pop static 0
+label IF_END1
+push constant 0
+return
+label IF_FALSE0
+label WHILE_EXP0
+push local 1
+push constant 0
+eq
+not
+not
+if-goto WHILE_END0
+push argument 0
+push local 0
+gt
+push argument 0
+push local 1
+lt
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 0
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+add
+push argument 0
+push constant 1
+sub
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push argument 0
+push constant 1
+sub
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+push local 1
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+push local 0
+add
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+push constant 0
+push local 1
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 1
+push local 1
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+goto IF_END4
+label IF_FALSE4
+push constant 0
+push local 0
+add
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_END4
+goto IF_END3
+label IF_FALSE3
+push argument 0
+push constant 1
+sub
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+push local 1
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 1
+neg
+push argument 0
+add
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+push constant 0
+push local 1
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push argument 0
+add
+push constant 1
+push local 1
+add
+pop pointer 1
+push that 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push argument 0
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+goto IF_END5
+label IF_FALSE5
+push constant 1
+push local 0
+add
+push argument 0
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push argument 0
+add
+push local 1
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_END5
+label IF_END3
+push constant 0
+return
+goto IF_END2
+label IF_FALSE2
+push local 1
+pop local 0
+push constant 1
+push local 1
+add
+pop pointer 1
+push that 0
+pop local 1
+label IF_END2
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+add
+push argument 0
+push constant 1
+sub
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 0
+push local 0
+add
+push constant 0
+push local 0
+add
+pop pointer 1
+push that 0
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+add
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+goto IF_END6
+label IF_FALSE6
+push constant 1
+push local 0
+add
+push argument 0
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push argument 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_END6
+push constant 0
+return
+function Memory.max 4
+push constant 1
+neg
+push argument 0
+add
+pop pointer 1
+push that 0
+push constant 1
+sub
+pop local 0
+push constant 1
+pop local 1
+push constant 0
+push argument 0
+add
+pop pointer 1
+push that 0
+pop local 2
+label WHILE_EXP0
+push local 1
+push local 0
+lt
+not
+if-goto WHILE_END0
+push local 1
+push argument 0
+add
+pop pointer 1
+push that 0
+pop local 3
+push local 3
+push local 2
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 3
+pop local 2
+label IF_FALSE0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 2
+return
