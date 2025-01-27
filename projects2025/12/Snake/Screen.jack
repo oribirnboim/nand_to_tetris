@@ -24,7 +24,7 @@ class Screen {
             var boolean prev_color;
             let prev_color = color;
             let color = false;
-            do Screen.drawRectangle(0,0,255,511);
+            do Screen.drawRectangle(0,0,511,255);
             let color = prev_color;
             return;
         }
@@ -57,7 +57,7 @@ class Screen {
             var int i,k;
             let pixelRAMIndex = 16384 + (32 * y) + (x/16);
             let pixelValue = Memory.peek(pixelRAMIndex);
-            let pixelBitIndex = (x-(16*(x/16)));
+            let pixelBitIndex = x & 15;
             let k = 1;
             while (i < pixelBitIndex){
                 let k = k + k;
