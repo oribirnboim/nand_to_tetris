@@ -105,8 +105,8 @@ class Memory {
       }
       else{ //if not adjacent
         let o[0] = freeList;
-        let freeList = o-1;
       }
+      let freeList = o-1;
       return;
     }
     while(~(next=0)){ //o is between current, next
