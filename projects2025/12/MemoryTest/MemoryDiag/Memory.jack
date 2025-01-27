@@ -55,6 +55,11 @@ class Memory {
     // the freeList should look like.
     var Array current, next;
     var int curSize;
+
+    if (size<1){
+      do Sys.error(5);
+    }
+
     let current = freeList;
     let next = current[1];
 
@@ -86,6 +91,7 @@ class Memory {
         let next = Memory.peek(next+1);
       }
     }
+    do Sys.error(6);
     return -1;
   }
 
