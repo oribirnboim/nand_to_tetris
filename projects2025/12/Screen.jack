@@ -55,12 +55,17 @@ class Screen {
             var int pixelValue;
             var int pixelBitIndex;
             var int i,k;
+            if ((x < 0) | (x > 511)) { do Sys.error(7);}
+            if ((y < 0) | (y > 255)) { do Sys.error(7);}
+
+
             let pixelRAMIndex = 16384 + (32 * y) + (x/16);
             let pixelValue = Memory.peek(pixelRAMIndex);
             let pixelBitIndex = x & 15;
             let k = 1;
+            let i = 0;
             while (i < pixelBitIndex){
-                let k = k + k;
+                let k = ^k;
                 let i = i + 1;
             }
             if (color) {let pixelValue = pixelValue | k;}
@@ -84,69 +89,99 @@ class Screen {
             // The case where y1 == y2 can be implemented efficiently by
             // trying to draw as many pixels as possible in a single assignment,
             // similarly to Fill in project 4.
-            var int start_pixel, end_pixel, remainder, startAddress,endAddress;
-            var int x, y, a, b, diff, dx, dy, X, Y, i, differencePixels, bites;
-            var int i;
-            if (y1 = y2){
-                if (x2 > x1) {let x = x1; let a = x2;}
-                else         {let x = x2; let a = x1;}
-                let y = y1;
-                let startAddress = 16384 + (32 * y) + (x/16);
-                let endAddress = 16384 + (32 * y) + (a/16);
-                let differencePixels = a - x;
+            var int i, x, X,y,Y;
+            if (x1 < x2) { let x = x1; let X = x2; let y = y1; let Y = y2;}
+            else { let x = x2; let X = x1; let y = y2; let Y = y1;}
 
-                if (startAddress = endAddress) {
-                let i = 0;
-                while (i < differencePixels) {do Screen.drawPixel(x + i,y); let i = i + 1;}
-                return;
-                }
-                let remainder = 16 - (x & 15);
-                let i = 0; while (i < remainder) { do Screen.drawPixel(x + i, y); let i = i + 1;}
-                let remainder = a & 15 + 1;
-                let i = 0; while (i < remainder) { do Screen.drawPixel(a - i, y); let i = i + 1;}
+            if ((x1 < 0) | (x1 > 511)) { do Sys.error(8);}
+            if ((y1 < 0) | (y1 > 255)) { do Sys.error(8);}
+            if ((x2 < 0) | (x2 > 511)) { do Sys.error(8);}
+            if ((y2 < 0) | (y2 > 255)) { do Sys.error(8);}
 
-                let bites = endAddress - startAddress ;
-                if (color) {let i = 1; while (i < bites) { do Memory.poke(startAddress + i, -1); let i = i + 1;}}
-                else {let i = 1; while (i < bites) { do Memory.poke(startAddress + i, 0); let i = i + 1;}}
-                return;
+
+
+
+            if (y2 = y1) { do Screen.drawLineSameY(x,X,y);}
+            else {do Screen.drawLineDifferentY(x,y,X,Y);}
+            return;
+            }
+
+        function void drawLineSameY(int x1, int x2, int y) {
+            var int i, startAddress, endAddress, difference, remainder;
+            let startAddress = 16384 + (32 * y) + (x1/16);
+            let endAddress = 16384 + (32 * y) + (x2/16);
+
+            // if same address colors only the pixels between x1,y and x2,y
+            if (startAddress = endAddress) {
+            let i = 0; while (i < ((x2-x1) + 1)) {do Screen.drawPixel (x1 + i, y); let i = i + 1;}
+            }
+
+
+            else {
+            //
+            let remainder = 16 - (x1 & 15);  
+            let i = 0; while (i < remainder) {do Screen.drawPixel(x1 + i, y); let i = i + 1;}
+            //
+            let remainder = 1 + (x2 & 15);  
+            let i = 0; while (i < remainder) {do Screen.drawPixel(x2 - i, y); let i = i + 1;}
+            //
+            let difference = endAddress - startAddress;
+            if (color) {let i = 1; while (i < difference) {do Memory.poke(startAddress + i, -1); let i = i + 1;}}
+            else {let i = 1; while (i < difference) {do Memory.poke(startAddress + i, 0); let i = i + 1;}}           
 
             }
-            //now handles the case where y1 != y2.
-            else{
-                if (x2 > x1) {let x = x1;let X = x2;let y = y1; let Y = y2;} else {let x = x2; let X = x1;let y = y2; let Y = y1;}
-                let a = 1;
-                let b = 0;
-                let dx = X - x;
-                let dy = Y - y;
-                let diff = 0;
-                do Screen.drawPixel(x,y);
-                if (dy > 0){
-                    while ((a < (dx + 1)) | (b < (dy + 1))){
-                        do Screen.drawPixel(x+a, y+b);
-                        if (diff < 0) {let a = a + 1; let diff = diff + dy;}
-                        else {let b = b + 1; let diff = diff - dx;}
-                    }
+
+            return;
+        }
+
+        function void drawLineDifferentY(int x1, int y1, int x2, int y2){
+            // 1. let x = x1, y = y1, a = 0, b = 0, diff = 0
+            // 2. Compute dx and dy
+            // 3. while ((a <= dx) and (b <= dy))
+            // 4.   do drawPixel(x+a, y+b)
+            // 5.   if (diff < 0) { let a=a+1, diff=diff+dy }
+            // 6.   else          { let b=b+1, diff=diff-dx }
+            var int x, y,a, b, diff, dx, dy;
+            let x = x1;
+            let y = y1;
+            let a = 0;
+            let b = 0;
+            let dx = x2-x1;
+            let dy = y2-y1;
+            if (dy > 0){
+                while ((a < (dx + 1)) & (b < (dy + 1))) {
+                    do Screen.drawPixel(x + a,y + b);
+                    if (diff < 0) { let a=a+1; let diff=diff+dy;}
+                    else          { let b=b+1; let diff=diff-dx;}
+                }
+            }
+            else {
+                while ((a < (dx + 1)) & (b > (dy - 1))) {
+                    do Screen.drawPixel(x + a,y + b);
+                    if (diff < 0) { let a=a+1; let diff=diff-dy;}
+                    else          { let b=b-1; let diff=diff-dx;}
                 }
             
-                else{
-                    while ((a < (dx + 1)) | (b > (dy - 1))){
-                        do Screen.drawPixel(x+a, y+b);
-                        if (diff < 0) {let a = a + 1; let diff = diff - dy;}
-                        else {let b = b - 1; let diff = diff - dx;}
-                    }
-                }
             }
-            return;   
+            return;
+
         }
+
 
         /** Draws a filled rectangle whose top left corner is (x1, y1)
          * and bottom right corner is (x2,y2), using the current color. */
         function void drawRectangle (int x1, int y1, int x2, int y2) {
             var int i, startY, endY;
+
+            if ((x1 < 0) | (x1 > 511)) { do Sys.error(8);}
+            if ((y1 < 0) | (y1 > 255)) { do Sys.error(8);}
+            if ((x2 < 0) | (x2 > 511)) { do Sys.error(8);}
+            if ((y2 < 0) | (y2 > 255)) { do Sys.error(8);}
+
             if (y2 > y1) {let startY = y1; let endY = y2;}
-            else       {let startY = y2; let endY = y1;}
+            else         {let startY = y2; let endY = y1;}
             let i = 0;
-            while (i < (endY - startY)) {do Screen.drawLine(x1, startY + i, x2, startY + i); let i = i + 1;}
+            while (i < ((endY - startY) + 1)) {do Screen.drawLineSameY(x1, x2, startY + i); let i = i + 1;}
             return;
         }
 
@@ -159,6 +194,11 @@ class Screen {
             // 2.   let halfWidth = sqrt(r*r - dy*dy)
             // 3.   do drawLine(x-halfWidth, y+dy, x+halfWidth, y+dy)
             var int dy, halfWidth;
+            if ((x < 0) | (x > 511)) { do Sys.error(12);}
+            if ((y < 0) | (y > 255)) { do Sys.error(12);}
+
+            if (((((r < 0)|(x + r > 511))|(x - r < 0))|(y + r > 255))|(y-r < 0)) {do Sys.error(13);}
+
             let dy = -r;
             while (~(dy > r)){
             let halfWidth = Math.sqrt ((r*r)-(dy*dy));

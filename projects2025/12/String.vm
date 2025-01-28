@@ -2,6 +2,16 @@ function String.new 0
 push constant 4
 call Memory.alloc 1
 pop pointer 0
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 14
+call Sys.error 1
+pop temp 0
+label IF_FALSE0
 push constant 48
 pop static 0
 push argument 0
@@ -11,20 +21,20 @@ pop this 0
 push this 1
 push constant 0
 gt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push this 1
 call Array.new 1
 pop this 2
 push constant 0
 pop this 3
-goto IF_END0
-label IF_FALSE0
+goto IF_END1
+label IF_FALSE1
 push constant 0
 not
 pop this 3
-label IF_END0
+label IF_END1
 push pointer 0
 return
 function String.dispose 0

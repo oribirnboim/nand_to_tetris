@@ -1436,20 +1436,6 @@ push constant 12
 add
 call Screen.drawPixel 2
 pop temp 0
-push this 0
-push this 1
-push this 0
-push this 5
-add
-push constant 1
-sub
-push this 1
-push this 5
-add
-push constant 1
-sub
-call Screen.drawRectangle 4
-pop temp 0
 push constant 0
 return
 function Square.clearSquare 0

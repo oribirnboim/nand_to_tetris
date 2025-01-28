@@ -104,6 +104,7 @@ push constant 8
 push local 0
 add
 push constant 9
+neg
 call Math.sqrt 1
 pop temp 0
 pop pointer 1
