@@ -36,6 +36,16 @@ pop that 0
 push constant 0
 return
 function Memory.alloc 3
+push argument 0
+push constant 1
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 5
+call Sys.error 1
+pop temp 0
+label IF_FALSE0
 push static 0
 pop local 0
 push constant 1
@@ -51,9 +61,9 @@ add
 pop pointer 1
 push that 0
 lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push constant 0
 push local 0
 add
@@ -63,16 +73,16 @@ push argument 0
 sub
 push constant 3
 lt
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
 push local 1
 pop static 0
 push local 0
 push constant 1
 add
 return
-label IF_FALSE1
+label IF_FALSE2
 push argument 0
 push constant 2
 add
@@ -125,7 +135,7 @@ push local 0
 push constant 1
 add
 return
-label IF_FALSE0
+label IF_FALSE1
 label WHILE_EXP0
 push local 1
 push constant 0
@@ -140,9 +150,9 @@ add
 pop pointer 1
 push that 0
 lt
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
 push constant 0
 push local 1
 add
@@ -152,9 +162,9 @@ push argument 0
 sub
 push constant 3
 lt
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
 push constant 1
 push local 0
 add
@@ -171,7 +181,7 @@ push local 1
 push constant 1
 add
 return
-label IF_FALSE3
+label IF_FALSE4
 push argument 0
 push constant 2
 add
@@ -234,8 +244,8 @@ push local 1
 push constant 1
 add
 return
-goto IF_END2
-label IF_FALSE2
+goto IF_END3
+label IF_FALSE3
 push local 1
 pop local 0
 push local 1
@@ -243,9 +253,12 @@ push constant 1
 add
 call Memory.peek 1
 pop local 1
-label IF_END2
+label IF_END3
 goto WHILE_EXP0
 label WHILE_END0
+push constant 6
+call Sys.error 1
+pop temp 0
 push constant 1
 neg
 return
@@ -321,11 +334,11 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
+label IF_END1
 push argument 0
 push constant 1
 sub
 pop static 0
-label IF_END1
 push constant 0
 return
 label IF_FALSE0

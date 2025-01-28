@@ -36,6 +36,9 @@ class Sys {
 
   /** Waits approximately duration milliseconds and returns.  */
   function void wait(int duration) {
+    if (duration<0){
+      do Sys.error(1);
+    }
     var int duration_counter;
     var int counter1;
     var int counter2;
@@ -44,7 +47,7 @@ class Sys {
     let counter1 = 0;
     let counter2=0;
     let y = 0;
-    let length = 2*2*2*2*2*2*2*2*2*2*2*2*2*2;
+    let length = 2*2*2*2*2*2*2*2*2*2;
     while (duration_counter < duration){
       while (counter1 < length){
         let counter1 = counter1 + 1;
