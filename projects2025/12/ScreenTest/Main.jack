@@ -20,12 +20,12 @@ class Main {
         let i = 0; while (i < 255){ do Screen.drawPixel(2*i,i); let i = i + 1;}
         */
 
+        do Screen.drawLineSameY(2,3,18);
+        //do Screen.drawRectangle(2,0,3,18);
+        do Sys.wait(1000);
         do Screen.setColor(false);
-        do Screen.drawRectangle(0,0,511,255);
-                do Screen.setColor(true);
-
-                do Screen.drawRectangle(0,0,511,255);
-
+        do Screen.drawPixel(3,18);
+ 
         /*
         do Screen.drawLine(0,220,511,220);        // base line
         do Screen.drawRectangle(280,90,410,220);  // house

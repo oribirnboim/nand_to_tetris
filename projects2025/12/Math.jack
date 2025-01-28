@@ -103,6 +103,7 @@ class Math {
         function int divide(int X, int Y){
             var int x,y, posResult;
             var boolean isneg;
+            if (y = 0) {}
             let isneg = false;
 
             if (X>0) {let x=X;} else {let x = 1+(~X); let isneg = ~(isneg);}

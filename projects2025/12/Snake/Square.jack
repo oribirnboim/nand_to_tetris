@@ -217,7 +217,6 @@ do Screen.drawPixel(x + 10, y + 12);
 do Screen.drawPixel(x + 11, y + 12);
 
 
-      do Screen.drawRectangle(x, y, x + squareSize-1, y + squareSize-1);
       return;
     }
 

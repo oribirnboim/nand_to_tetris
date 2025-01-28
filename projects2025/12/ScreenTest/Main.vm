@@ -1,22 +1,18 @@
 function Main.main 0
+push constant 2
+push constant 3
+push constant 18
+call Screen.drawLineSameY 3
+pop temp 0
+push constant 1000
+call Sys.wait 1
+pop temp 0
 push constant 0
 call Screen.setColor 1
 pop temp 0
-push constant 0
-push constant 0
-push constant 511
-push constant 255
-call Screen.drawRectangle 4
-pop temp 0
-push constant 0
-not
-call Screen.setColor 1
-pop temp 0
-push constant 0
-push constant 0
-push constant 511
-push constant 255
-call Screen.drawRectangle 4
+push constant 3
+push constant 18
+call Screen.drawPixel 2
 pop temp 0
 push constant 0
 return
