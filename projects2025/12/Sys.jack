@@ -48,10 +48,11 @@ class Sys {
     let counter1 = 0;
     let counter2=0;
     let y = 0;
-    let length = 2*2*2*2*2*2*2*2*2*2;
+    let length = 2*2*2*2*2*2*2*2*2*2*2*2;
     while (duration_counter < duration){
       while (counter1 < length){
         let counter1 = counter1 + 1;
+        //let y = Math.sqrt(length);
       }
       let duration_counter = duration_counter + 1;
     }

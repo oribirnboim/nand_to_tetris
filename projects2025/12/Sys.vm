@@ -64,6 +64,10 @@ push constant 2
 call Math.multiply 2
 push constant 2
 call Math.multiply 2
+push constant 2
+call Math.multiply 2
+push constant 2
+call Math.multiply 2
 pop local 3
 label WHILE_EXP0
 push local 0
